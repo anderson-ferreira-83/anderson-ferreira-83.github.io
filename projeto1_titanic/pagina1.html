@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sobreviventes do Titanic</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<nav class="menu-navegacao">
+    <a href="index.html"><button>🏠 Início</button></a>
+    <a href="pagina2.html"><button>🎟️ Classes Sociais</button></a>
+    <a href="pagina3.html"><button>💰 Análise Econômica</button></a>
+</nav>
+
+<body>
+    <h1>🧍 Análise de Sobreviventes</h1>
+
+    <section>
+        <h2>Resumo Geral</h2>
+        <p>Total de passageiros: <span id="total"></span></p>
+        <p>Sobreviventes: <span id="sobreviventes"></span></p>
+        <p>Taxa de sobrevivência: <span id="taxa"></span></p>
+    </section>
+
+    <section>
+        <h2>Por Sexo</h2>
+        <ul>
+            <li>Homens sobreviventes: <span id="homens"></span></li>
+            <li>Mulheres sobreviventes: <span id="mulheres"></span></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Por Faixa Etária</h2>
+        <ul id="faixas">
+            <!-- Preenchido dinamicamente -->
+        </ul>
+    </section>
+
+    <script src="js/dados.js"></script>
+    <script src="js/pagina1.js"></script>
+</body>
+
+</html>
