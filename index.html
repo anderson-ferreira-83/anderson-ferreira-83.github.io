@@ -1,70 +1,440 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Portfolio Data Scientist - [Seu Nome]</title>
-    <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anderson H. R. Ferreira | Data Scientist &amp; PhD (Unicamp)</title>
+  <meta name="description" content="Portfólio de Anderson H. R. Ferreira, Data Scientist e pesquisador em vibroacústica na Unicamp. Projetos em machine learning, data engineering e IoT." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
-    <header>
-        <h1>Olá! Sou Professor Anderson H.R. Ferreira</h1>
-        <p>Data Scientist | Analista de Dados | Machine Learning Enthusiast</p>
-    </header>
+  <div class="background" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="grid-overlay"></div>
+  </div>
 
-    <nav>
-        <ul>
-            <li><a href="#sobre">Sobre Mim</a></li>
-            <li><a href="#projetos">Projetos</a></li>
-            <li><a href="#contato">Contato</a></li>
-        </ul>
-    </nav>
+  <header class="site-header" id="top">
+    <div class="container nav-wrap">
+      <a class="logo" href="#top" aria-label="Ir para o topo">AF</a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="#sobre">Sobre</a>
+        <a href="#pesquisa">Pesquisa</a>
+        <a href="#projetos">Projetos</a>
+        <a href="#publicacoes">Publicações</a>
+        <a href="#competencias">Competências</a>
+        <a href="#docencia">Docência</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
 
-    <main>
-        <section id="sobre">
-            <h2>Sobre Mim</h2>
-            <p>Sou um cientista de dados apaixonado por transformar dados em insights valiosos. Tenho experiência com Python, R, SQL, machine learning e visualização de dados.</p>
-        </section>
-
-        <section id="projetos">
-            <h2>Meus Projetos</h2>
-
-            <div class="projeto" onclick="abrirProjeto('https://anderson-ferreira-83.github.io/projeto1_titanic/index.html')">
-                <h3>Análise do Titanic</h3>
-                <p>Exploração e modelagem preditiva usando Python e pandas para prever sobreviventes.</p>
+  <main>
+    <section class="hero section" data-reveal>
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <p class="eyebrow">Data Scientist · PhD (Unicamp) · Professor</p>
+          <h1>Anderson H. R. Ferreira</h1>
+          <p class="lead">
+            Pesquisador em vibroacústica no Laboratório de Vibroacústica (Unicamp),
+            aplicando ciência de dados e machine learning para resolver desafios de engenharia
+            em vibração e acústica.
+          </p>
+          <div class="hero-actions icon-row" aria-label="Redes profissionais">
+            <a class="icon-link" href="https://www.linkedin.com/in/anderson-ferreira-1a473138" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 0H5C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5V5c0-2.761-2.239-5-5-5zM7.09 20.452H3.56V9h3.53v11.452zM5.325 7.433c-1.129 0-2.045-.916-2.045-2.045 0-1.129.916-2.045 2.045-2.045s2.045.916 2.045 2.045c0 1.129-.916 2.045-2.045 2.045zM20.452 20.452h-3.528v-5.569c0-1.328-.026-3.037-1.852-3.037-1.852 0-2.136 1.445-2.136 2.939v5.667H9.409V9h3.389v1.561h.049c.472-.897 1.624-1.846 3.342-1.846 3.572 0 4.226 2.351 4.226 5.41v6.327z"/>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+            <a class="icon-link" href="https://www.researchgate.net/profile/Anderson-Ferreira-9?ev=hdr_xprf" target="_blank" rel="noopener" aria-label="ResearchGate">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                <text x="12" y="16" text-anchor="middle" font-size="8" font-family="Space Grotesk, sans-serif" font-weight="700" fill="currentColor">RG</text>
+              </svg>
+              <span>ResearchGate</span>
+            </a>
+            <a class="icon-link" href="https://github.com/anderson-ferreira-83" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.016-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.236 1.84 1.236 1.07 1.834 2.807 1.305 3.492.998.108-.775.418-1.305.762-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.536-1.523.116-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3-.404c1.02.005 2.047.138 3 .404 2.29-1.552 3.296-1.23 3.296-1.23.653 1.653.242 2.873.118 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.805 5.623-5.475 5.92.43.37.815 1.096.815 2.21 0 1.596-.014 2.884-.014 3.277 0 .322.218.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+            <a class="icon-link" href="assets/anderson-ferreira-cv.pdf" target="_blank" rel="noopener" aria-label="Currículo">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 2h8l4 4v16H6V2zm8 1.5V7h3.5L14 3.5zM8 11h8v2H8v-2zm0 4h8v2H8v-2z"/>
+              </svg>
+              <span>CV</span>
+            </a>
+          </div>
+          <div class="hero-tags">
+            <span class="tag">Machine Learning</span>
+            <span class="tag">Vibração &amp; Acústica</span>
+            <span class="tag">Data Engineering</span>
+            <span class="tag">MLOps</span>
+          </div>
+        </div>
+        <div class="hero-card" data-reveal>
+          <img class="profile-photo" src="assets/profile2_dersao83_github.jpg" alt="Foto de Anderson H. R. Ferreira" />
+          <h2>Resumo em 60s</h2>
+          <p>
+            Doutorando com foco em soluções baseadas em dados para engenharia,
+            combinando modelagem estatística, deep learning e sistemas inteligentes.
+          </p>
+          <div class="meta-list">
+            <div>
+              <span class="meta-label">Atuação</span>
+              <span class="meta-value">Vibroacústica · ML · Engenharia</span>
             </div>
-
-            <div class="projeto" onclick="abrirProjeto('https://github.com/seunome/forecasting-vendas')">
-                <h3>Previsão de Vendas</h3>
-                <p>Modelo de séries temporais para previsão de vendas mensais usando ARIMA e Prophet.</p>
+            <div>
+              <span class="meta-label">Laboratório</span>
+              <span class="meta-value">
+                <a class="inline-link" href="https://www.fem.unicamp.br/departamento-de-mecanica-computacional/" target="_blank" rel="noopener">
+                  Departamento de Mecânica Computacional (DMC) — Unicamp
+                </a>
+              </span>
             </div>
-
-            <div class="projeto" onclick="abrirProjeto('https://github.com/seunome/dashboard-visualizacao')">
-                <h3>Dashboard Interativo</h3>
-                <p>Dashboard construído com Dash/Plotly para visualização dinâmica de dados de clientes.</p>
+            <div>
+              <span class="meta-label">Interesse</span>
+              <span class="meta-value">Modelos preditivos e deploy em produção</span>
             </div>
+            <div>
+              <span class="meta-label">Curso</span>
+              <span class="meta-value">
+                <a class="inline-link" href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/" target="_blank" rel="noopener">
+                  Física 2 — Oscilações
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        </section>
+    <section id="sobre" class="section" data-reveal>
+      <div class="container two-column">
+        <div>
+          <h2 class="section-title">Sobre mim</h2>
+          <p>
+            Sou cientista de dados e pesquisador, com experiência em todo o ciclo de vida de modelos —
+            da preparação de dados à implantação e monitoramento. Minha pesquisa explora como técnicas
+            avançadas de ML podem ampliar a confiabilidade de sistemas mecânicos e acústicos complexos.
+          </p>
+          <p>
+            Atuo também como professor nas disciplinas de Programação Web (Front end e Back end),
+            Programação Orientada a Objetos (Python), Estrutura de Dados I e II e Fundamentos de Bancos de Dados (SQL) e SGBD.
+          </p>
+          <div class="about-courses">
+            <h3 class="section-mini">Cursos em construção</h3>
+            <div class="cards compact-cards">
+              <article class="card course-card">
+                <h4>Programação Web (Front end e Back end)</h4>
+                <p>HTML, CSS, JavaScript e PHP com foco em aplicações completas e boas práticas de desenvolvimento.</p>
+                <a class="link-pill is-soon" href="#" aria-disabled="true">Em breve</a>
+              </article>
+              <article class="card course-card">
+                <h4>Programação Orientada a Objetos (Python)</h4>
+                <p>Compreender problemas, projetar, implementar e validar soluções algorítmicas com orientação a objetos.</p>
+                <p class="course-note">Base para a certificação PCAP™ (Python Institute) — OOP, módulos, exceções e recursos avançados de Python.</p>
+                <div class="course-links">
+                  <a class="link-pill is-soon" href="#" aria-disabled="true">Em breve</a>
+                  <a class="link-pill" href="https://pythoninstitute.org/pcap" target="_blank" rel="noopener">PCAP™</a>
+                </div>
+              </article>
+              <article class="card course-card">
+                <h4>Estrutura de Dados I</h4>
+                <p>Listas, filas, pilhas e buscas. Organização e recuperação da informação, modularização, funções, ponteiros e vetores.</p>
+                <a class="link-pill is-soon" href="#" aria-disabled="true">Em breve</a>
+              </article>
+              <article class="card course-card">
+                <h4>Estrutura de Dados II</h4>
+                <p>Árvores binárias, AVL, busca binária, quicksort, inserção e bolha, além da escolha de estruturas adequadas.</p>
+                <a class="link-pill is-soon" href="#" aria-disabled="true">Em breve</a>
+              </article>
+              <article class="card course-card">
+                <h4>Fundamentos de Bancos de Dados (SQL) e SGBD</h4>
+                <p>Modelos de dados, conceitos de projeto, fundamentos de SGBDs e manipulação eficiente da informação.</p>
+                <p class="course-note">Base para a certificação Oracle Database SQL Certified Associate — SQL, DDL/DML, modelagem, normalização e índices.</p>
+                <div class="course-links">
+                  <a class="link-pill is-soon" href="#" aria-disabled="true">Em breve</a>
+                  <a class="link-pill" href="https://education.oracle.com/oracle-database-sql-certified-associate/trackp_457" target="_blank" rel="noopener">Oracle SQL</a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div class="callout">
+          <h3>Foco atual</h3>
+          <ul>
+            <li>Detecção de padrões e anomalias em sinais vibroacústicos</li>
+            <li>Modelos preditivos robustos com validação rigorosa</li>
+            <li>Integração de sensores IoT e pipelines de dados</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-        <section id="contato">
-            <h2>Contato</h2>
-            <form id="formContato">
-                <input type="text" id="nome" placeholder="Seu nome" required />
-                <input type="email" id="email" placeholder="Seu email" required />
-                <textarea id="mensagem" placeholder="Sua mensagem" required></textarea>
-                <button type="submit">Enviar</button>
-            </form>
-            <p id="resposta"></p>
-        </section>
-    </main>
+    <section id="pesquisa" class="section" data-reveal>
+      <div class="container">
+        <h2 class="section-title">Pesquisa e interesses</h2>
+        <div class="cards">
+          <article class="card" data-reveal>
+            <h3>Vibração e acústica aplicada</h3>
+            <p>Modelagem orientada a dados para caracterização de sistemas, falhas e dispersão de energia.</p>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Machine Learning interpretável</h3>
+            <p>Modelos com explicabilidade e validação estatística para decisões confiáveis.</p>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Sistemas inteligentes em produção</h3>
+            <p>Integração entre modelagem, MLOps e monitoramento contínuo de desempenho.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <footer>
-        &copy; 2025 Portfolio Data Scientist - [Seu Nome]
-    </footer>
+    <section id="projetos" class="section" data-reveal>
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Projetos</h2>
+          <p class="section-subtitle">Quatro estudos que serão publicados em breve. Resumos e links oficiais serão adicionados assim que estiverem disponíveis.</p>
+        </div>
+        <div class="cards project-grid">
+          <article class="card project-card" data-reveal>
+            <div class="status">Em preparação</div>
+            <h3>IoT (ESP32 + MPU6050) Anomaly Detection</h3>
+            <p>Detecção de anomalias em dados inerciais para manutenção preditiva com IoT.</p>
+            <div class="tag-group">
+              <span class="tag">IoT</span>
+              <span class="tag">Anomalias</span>
+              <span class="tag">Edge</span>
+            </div>
+          </article>
+          <article class="card project-card" data-reveal>
+            <div class="status implemented">Implementado</div>
+            <h3>Hyperten ML</h3>
+            <p>Modelos de aprendizado de máquina para predição e estratificação de risco de hipertensão.</p>
+            <div class="card-links">
+              <a class="link-pill" href="https://anderson-ferreira-83.github.io/Hyperten_ML/" target="_blank" rel="noopener">Projeto</a>
+              <a class="link-pill" href="https://dl52cpaeesvk0.cloudfront.net/ui/index.html" target="_blank" rel="noopener">Inferência clínica</a>
+            </div>
+            <div class="tag-group">
+              <span class="tag">Saúde</span>
+              <span class="tag">Modelos preditivos</span>
+              <span class="tag">Validação</span>
+            </div>
+          </article>
+          <article class="card project-card" data-reveal>
+            <div class="status">Em preparação</div>
+            <h3>Band Gap Prediction — Acoustic Metamaterials</h3>
+            <p>Estimativa de band gaps em metamateriais acústicos com regressão e features geométricas.</p>
+            <div class="tag-group">
+              <span class="tag">Metamateriais</span>
+              <span class="tag">Regressão</span>
+              <span class="tag">Vibroacústica</span>
+            </div>
+          </article>
+          <article class="card project-card" data-reveal>
+            <div class="status">Em preparação</div>
+            <h3>Pipeline Leakage</h3>
+            <p>Detecção de vazamentos em dutos a partir de sinais de sensores e modelos preditivos.</p>
+            <div class="tag-group">
+              <span class="tag">Sinais</span>
+              <span class="tag">ML</span>
+              <span class="tag">Engenharia</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <script src="js/script.js"></script>
+    <section id="publicacoes" class="section" data-reveal>
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Publicações em destaque</h2>
+          <p class="section-subtitle">Acesso rápido às publicações mais relevantes e seus repositórios oficiais.</p>
+        </div>
+        <div class="cards publications-grid">
+          <article class="card" data-reveal>
+            <h3>Bandgap optimization in locally resonant metamaterial plates</h3>
+            <p class="card-subtitle">Mechanical Systems and Signal Processing (MSSP) · ScienceDirect · Open Access</p>
+            <p>Estudo comparativo de cinco geometrias de rede para atenuação de ondas em baixa frequência.</p>
+            <p class="card-meta">Revista interdisciplinar em Eng. Mecânica, Aeroespacial e Civil, focada em avanços em processamento de sinais, dinâmica e sistemas dinâmicos.</p>
+            <p class="card-metrics">CiteScore 18.0 · Impact Factor 8.9</p>
+            <a class="link-pill" href="https://www.sciencedirect.com/science/article/abs/pii/S0888327025014487?via%3Dihub" target="_blank" rel="noopener">Acessar</a>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Semi-analytical formulation for sound transmission loss</h3>
+            <p>ResearchGate — análise de transmissão sonora em placa espessa com ressonadores.</p>
+            <p class="card-meta">
+              Apresentado no ICEDyn 2017 — International Conference on Structural Engineering Dynamics, 3–5 de junho de 2017, Ericeira, Portugal.
+              <a class="inline-link" href="https://www.icedyn.net/previous-editions" target="_blank" rel="noopener">Acesso</a>
+            </p>
+            <a class="link-pill" href="https://www.researchgate.net/publication/319448679_SEMI-ANALYTICAL_FORMULATION_FOR_SOUND_TRANSMISSION_LOSS_ANALYSIS_THROUGH_A_THICK_PLATE_WITH_PERIODICALLY_ATTACHED_SPRING-MASS_RESONATORS" target="_blank" rel="noopener">Acessar</a>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Flexural wave band gaps in a multi-resonator elastic metamaterial thin plate</h3>
+            <p>ResearchGate — band gaps em metamateriais elásticos multi-ressonantes.</p>
+            <a class="link-pill" href="https://www.researchgate.net/publication/319448866_FLEXURAL_WAVE_BAND_GAPS_IN_A_MULTI-RESONATOR_ELASTIC_METAMATERIAL_THIN_PLATE" target="_blank" rel="noopener">Acessar</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="competencias" class="section" data-reveal>
+      <div class="container">
+        <h2 class="section-title">Competências técnicas</h2>
+        <div class="cards skills-grid">
+          <article class="card" data-reveal>
+            <h3>Machine Learning</h3>
+            <div class="tag-group">
+              <span class="tag">Scikit-learn</span>
+              <span class="tag">TensorFlow</span>
+              <span class="tag">Keras</span>
+              <span class="tag">PyTorch</span>
+              <span class="tag">Feature Engineering</span>
+              <span class="tag">GridSearch</span>
+              <span class="tag">RandomSearch</span>
+              <span class="tag">Cross-validation</span>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Data Science</h3>
+            <div class="tag-group">
+              <span class="tag">Pandas</span>
+              <span class="tag">NumPy</span>
+              <span class="tag">SciPy</span>
+              <span class="tag">Statsmodels</span>
+              <span class="tag">Matplotlib</span>
+              <span class="tag">Seaborn</span>
+              <span class="tag">Plotly</span>
+              <span class="tag">Dash</span>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <h3>NLP &amp; Deep Learning</h3>
+            <div class="tag-group">
+              <span class="tag">CNNs</span>
+              <span class="tag">RNNs</span>
+              <span class="tag">NLTK</span>
+              <span class="tag">spaCy</span>
+              <span class="tag">Hugging Face</span>
+              <span class="tag">Transformers</span>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Data Engineering</h3>
+            <div class="tag-group">
+              <span class="tag">ETL</span>
+              <span class="tag">Apache Airflow</span>
+              <span class="tag">Hadoop</span>
+              <span class="tag">Spark</span>
+              <span class="tag">MySQL</span>
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">MongoDB</span>
+              <span class="tag">Cassandra</span>
+              <span class="tag">Redshift</span>
+              <span class="tag">BigQuery</span>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <h3>MLOps &amp; Cloud</h3>
+            <div class="tag-group">
+              <span class="tag">Docker</span>
+              <span class="tag">MLflow</span>
+              <span class="tag">FastAPI</span>
+              <span class="tag">AWS</span>
+              <span class="tag">GCP</span>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Programação</h3>
+            <div class="tag-group">
+              <span class="tag">Python</span>
+              <span class="tag">Bash</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Matlab</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">PHP</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="docencia" class="section" data-reveal>
+      <div class="container">
+        <h2 class="section-title">Docência</h2>
+        <div class="cards">
+          <article class="card" data-reveal>
+            <h3>Programação Web</h3>
+            <p>Front end e Back end com JavaScript, HTML, CSS e PHP.</p>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Programação Orientada a Objetos</h3>
+            <p>Fundamentos e aplicações com Python.</p>
+          </article>
+          <article class="card" data-reveal>
+            <h3>Estrutura de Dados</h3>
+            <p>Disciplinas I e II com foco em eficiência, organização e análise de algoritmos.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" class="section" data-reveal>
+      <div class="container contact">
+        <div>
+          <h2 class="section-title">Contato e colaboração</h2>
+          <p>Aberto a colaborações acadêmicas, projetos de pesquisa aplicada e consultorias em data science.</p>
+        </div>
+        <div class="contact-actions">
+          <div class="icon-row">
+            <a class="icon-link" href="https://www.linkedin.com/in/anderson-ferreira-1a473138" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 0H5C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5V5c0-2.761-2.239-5-5-5zM7.09 20.452H3.56V9h3.53v11.452zM5.325 7.433c-1.129 0-2.045-.916-2.045-2.045 0-1.129.916-2.045 2.045-2.045s2.045.916 2.045 2.045c0 1.129-.916 2.045-2.045 2.045zM20.452 20.452h-3.528v-5.569c0-1.328-.026-3.037-1.852-3.037-1.852 0-2.136 1.445-2.136 2.939v5.667H9.409V9h3.389v1.561h.049c.472-.897 1.624-1.846 3.342-1.846 3.572 0 4.226 2.351 4.226 5.41v6.327z"/>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+            <a class="icon-link" href="https://www.researchgate.net/profile/Anderson-Ferreira-9?ev=hdr_xprf" target="_blank" rel="noopener" aria-label="ResearchGate">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                <text x="12" y="16" text-anchor="middle" font-size="8" font-family="Space Grotesk, sans-serif" font-weight="700" fill="currentColor">RG</text>
+              </svg>
+              <span>ResearchGate</span>
+            </a>
+            <a class="icon-link" href="https://github.com/anderson-ferreira-83" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.016-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.236 1.84 1.236 1.07 1.834 2.807 1.305 3.492.998.108-.775.418-1.305.762-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.536-1.523.116-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 3-.404c1.02.005 2.047.138 3 .404 2.29-1.552 3.296-1.23 3.296-1.23.653 1.653.242 2.873.118 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.805 5.623-5.475 5.92.43.37.815 1.096.815 2.21 0 1.596-.014 2.884-.014 3.277 0 .322.218.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+            <a class="icon-link" href="assets/anderson-ferreira-cv.pdf" target="_blank" rel="noopener" aria-label="Currículo">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 2h8l4 4v16H6V2zm8 1.5V7h3.5L14 3.5zM8 11h8v2H8v-2zm0 4h8v2H8v-2z"/>
+              </svg>
+              <span>CV</span>
+            </a>
+          </div>
+          <p class="contact-note">Respondo mais rápido pelo LinkedIn.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 Anderson H. R. Ferreira. Todos os direitos reservados.</span>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
 </body>
-
 </html>
