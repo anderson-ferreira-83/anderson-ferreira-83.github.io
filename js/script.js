@@ -1,21 +1,31 @@
-function abrirProjeto(url) {
-    window.open(url, "_blank");
+﻿const header = document.querySelector('.site-header');
+const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
+
+function onScroll() {
+  if (!header) return;
+  header.classList.toggle('is-scrolled', window.scrollY > 12);
 }
 
-document.getElementById('formContato').addEventListener('submit', function (e) {
-    e.preventDefault();
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('load', onScroll);
 
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const mensagem = document.getElementById('mensagem').value.trim();
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
 
-    if (!nome || !email || !mensagem) {
-        alert('Por favor, preencha todos os campos.');
-        return;
-    }
-
-    this.reset();
-    const resposta = document.getElementById('resposta');
-    resposta.textContent = `Obrigado, ${nome}! Sua mensagem foi enviada com sucesso.`;
-    resposta.style.color = 'green';
-});
+  revealItems.forEach((item, index) => {
+    item.style.setProperty('--delay', `${Math.min(index * 0.08, 0.5)}s`);
+    observer.observe(item);
+  });
+} else {
+  revealItems.forEach((item) => item.classList.add('is-visible'));
+}
