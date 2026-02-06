@@ -1,0 +1,105 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <style>
+    .equation {
+      font-family: "STIX Two Math", "Cambria Math", "STIX Two Text", "Times New Roman", serif;
+      font-size: 16px;
+      fill: #1a1f2b;
+      letter-spacing: 0.2px;
+      text-rendering: geometricPrecision;
+    }
+    .equation.small {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .diagram-line {
+      stroke: #1a1f2b;
+      stroke-width: 1.2;
+      fill: none;
+      shape-rendering: geometricPrecision;
+    }
+    .diagram-node {
+      stroke: #1a1f2b;
+      stroke-width: 1.2;
+      fill: none;
+    }
+    .diagram-block {
+      stroke: #1a1f2b;
+      stroke-width: 1.2;
+      fill: none;
+      rx: 8;
+      ry: 8;
+    }
+    .soft {
+      opacity: 0.85;
+    }
+    .dashed {
+      stroke-dasharray: 6 4;
+    }
+  </style>
+
+  <!-- Differential Equations -->
+  <text class="equation" x="60" y="90">D/2[(1−ν)∇²ψₓ + (1+ν)(∂ₓ∂ᵧψᵧ + ∂ₓ²ψₓ)] + κ²Gh(∂ₓw − ψₓ) − ρω²Iₓψₓ = 0</text>
+  <text class="equation" x="60" y="125">Ghκ²[∇²w + ∂ₓψₓ + ∂ᵧψᵧ] − ω²ρ h w = − Σ fₘ δ(r − Rₘ)</text>
+
+  <text class="equation small" x="90" y="205">Σ fₘ δ(r − Rₘ) = Σ kₘ (W_G − Wₘ) e^{−β r}</text>
+  <text class="equation small" x="80" y="700">X(ω) = ∫ x(t) e^{−jωt} dt</text>
+  <text class="equation small" x="140" y="760">d²x/dt² + 2ζωₙ dx/dt + ωₙ² x = 0</text>
+
+  <!-- Matrix Problem -->
+  <text class="equation" x="780" y="320" transform="rotate(6 780 320)">([K] − ω²[M]){q} = 0</text>
+  <text class="equation small" x="760" y="640">−ω² mᵢ wᵢ(R) = fᵢ(R)</text>
+
+  <!-- Block Diagram -->
+  <g transform="translate(640 150) rotate(8)">
+    <line class="diagram-line dashed" x1="-50" y1="22" x2="0" y2="22" />
+    <rect class="diagram-block" x="0" y="0" width="150" height="44" />
+    <rect class="diagram-block" x="200" y="0" width="170" height="44" />
+    <rect class="diagram-block" x="420" y="0" width="130" height="44" />
+    <line class="diagram-line" x1="150" y1="22" x2="200" y2="22" />
+    <line class="diagram-line" x1="370" y1="22" x2="420" y2="22" />
+    <line class="diagram-line dashed" x1="550" y1="22" x2="600" y2="22" />
+  </g>
+
+  <!-- Neural Network Diagram -->
+  <g transform="translate(760 470) rotate(-6)">
+    <!-- Input -->
+    <circle class="diagram-node" cx="0" cy="0" r="7" />
+    <circle class="diagram-node" cx="0" cy="32" r="7" />
+    <circle class="diagram-node" cx="0" cy="64" r="7" />
+    <circle class="diagram-node" cx="0" cy="96" r="7" />
+
+    <!-- Hidden -->
+    <circle class="diagram-node" cx="70" cy="-16" r="7" />
+    <circle class="diagram-node" cx="70" cy="16" r="7" />
+    <circle class="diagram-node" cx="70" cy="48" r="7" />
+    <circle class="diagram-node" cx="70" cy="80" r="7" />
+    <circle class="diagram-node" cx="70" cy="112" r="7" />
+
+    <!-- Output -->
+    <circle class="diagram-node" cx="150" cy="16" r="7" />
+    <circle class="diagram-node" cx="150" cy="48" r="7" />
+    <circle class="diagram-node" cx="150" cy="80" r="7" />
+
+    <!-- Connections -->
+    <line class="diagram-line soft" x1="7" y1="0" x2="63" y2="-16" />
+    <line class="diagram-line soft" x1="7" y1="0" x2="63" y2="16" />
+    <line class="diagram-line soft" x1="7" y1="32" x2="63" y2="16" />
+    <line class="diagram-line soft" x1="7" y1="32" x2="63" y2="48" />
+    <line class="diagram-line soft" x1="7" y1="64" x2="63" y2="48" />
+    <line class="diagram-line soft" x1="7" y1="64" x2="63" y2="80" />
+    <line class="diagram-line soft" x1="7" y1="96" x2="63" y2="80" />
+    <line class="diagram-line soft" x1="7" y1="96" x2="63" y2="112" />
+
+    <line class="diagram-line soft" x1="77" y1="16" x2="143" y2="16" />
+    <line class="diagram-line soft" x1="77" y1="48" x2="143" y2="16" />
+    <line class="diagram-line soft" x1="77" y1="48" x2="143" y2="48" />
+    <line class="diagram-line soft" x1="77" y1="80" x2="143" y2="48" />
+    <line class="diagram-line soft" x1="77" y1="80" x2="143" y2="80" />
+    <line class="diagram-line soft" x1="77" y1="112" x2="143" y2="80" />
+  </g>
+
+  <!-- Decorative Signal Path -->
+  <g transform="translate(220 500) rotate(12)">
+    <path class="diagram-line dashed" d="M0,40 Q60,-10 120,40 T240,40" />
+  </g>
+</svg>

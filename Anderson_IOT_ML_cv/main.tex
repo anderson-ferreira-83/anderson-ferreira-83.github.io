@@ -1,0 +1,205 @@
+\documentclass[10pt,a4paper]{article}
+
+% Pacotes básicos
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{hyperref}
+
+% Configurações
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+
+% Cores
+\definecolor{primaryblue}{RGB}{52, 152, 219}
+\definecolor{green}{RGB}{46, 204, 113}
+\definecolor{orange}{RGB}{230, 126, 34}
+\definecolor{red}{RGB}{231, 76, 60}
+\definecolor{purple}{RGB}{155, 89, 182}
+\definecolor{dark}{RGB}{52, 73, 94}
+\definecolor{light}{RGB}{236, 240, 241}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primaryblue,
+    urlcolor=primaryblue,
+    pdfborder={0 0 0}
+}
+
+% Comandos
+\newcommand{\sectionheader}[2]{
+    \vspace{0.3em}
+    {\large\bfseries\textcolor{#1}{#2}} \\
+    \textcolor{#1}{\rule{\linewidth}{1.5pt}}
+    \vspace{0.2em}
+}
+
+% Expertise sem barras - limpo e profissional
+\newcommand{\skillentry}[3]{
+    \textbf{#1} \hfill \textcolor{#3}{\textbf{#2\%}} \\[0.1em]
+}
+
+\newcommand{\experienceentry}[4]{
+    \textcolor{primaryblue}{\textbf{#1}} \hfill \textcolor{dark}{\textbf{#2}} \\
+    \textcolor{dark}{\textit{#3}} \\
+    {\small\textcolor{dark}{#4}} \\[0.3em]
+}
+
+\newcommand{\educationentry}[4]{
+    \textcolor{green}{\textbf{#1}} \hfill \textcolor{dark}{\textbf{#2}} \\
+    {\small\textcolor{dark}{\textbf{#3}}} \\
+    {\footnotesize\textcolor{dark}{#4}} \\[0.15em]
+}
+
+\begin{document}
+
+% =================== CABEÇALHO ===================
+\colorbox{primaryblue}{%
+\begin{minipage}{\textwidth}
+\centering
+\vspace{0.7em}
+{\Huge\bfseries\textcolor{white}{ANDERSON H.R. FERREIRA}} \\[0.2em]
+{\Large\textcolor{white}{Cientista de Dados \& Educador Tecnológico}} \\
+\vspace{0.7em}
+\end{minipage}
+}
+
+% =================== CONTATO ===================
+\vspace{0.3em}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Local} & \textbf{Telefone} & \textbf{Email} & \textbf{GitHub} & \textbf{LinkedIn} & \textbf{Portfolio} \\
+\hline
+Salto, SP & 11 95850 9690 & a058899@dac.unicamp.br & \href{https://github.com/anderson-ferreira-83}{anderson-ferreira-83} & \href{https://www.linkedin.com/in/anderson-ferreira-1a473138/}{anderson-ferreira} & \href{https://anderson-ferreira-83.github.io/}{anderson-ferreira} \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3em}
+
+% =================== LAYOUT FINAL OTIMIZADO ===================
+\begin{minipage}[t]{0.43\textwidth}
+
+% RESUMO PROFISSIONAL
+\sectionheader{primaryblue}{RESUMO PROFISSIONAL}
+{\small\textcolor{dark}{
+\textbf{Cientista de Dados e Educador} especializado em conectar academia e indústria. Professor Adjunto com expertise em \textbf{IoT}, \textbf{Machine Learning} e \textbf{desenvolvimento mobile}. Foco em mentoria técnica e projetos que transformam dados em insights acionáveis.
+}}
+
+% STACK TECNOLÓGICO
+\sectionheader{green}{STACK TECNOLÓGICO}
+{\small
+\textcolor{orange}{\textbf{Python}} - Machine Learning \\
+\textcolor{red}{\textbf{Java}} - Backend Development \\
+\textcolor{primaryblue}{\textbf{HTML/CSS/JS}} - Frontend \\
+\textcolor{purple}{\textbf{PHP}} - Web Backend \\
+\textcolor{dark}{\textbf{SQL/NoSQL}} - Databases \\
+\textcolor{orange}{\textbf{AWS/GCP}} - Cloud Computing \\
+\textcolor{primaryblue}{\textbf{Docker}} - Containerização \\
+\textcolor{green}{\textbf{Android}} - Mobile Dev \\
+\textcolor{red}{\textbf{ESP32/IoT}} - Hardware \\
+}
+
+% NÍVEIS DE EXPERTISE - FUNCIONAL
+\sectionheader{orange}{NÍVEIS DE EXPERTISE}
+{\small
+\skillentry{Machine Learning}{95}{green}
+\skillentry{Data Engineering}{90}{primaryblue}
+\skillentry{IoT Development}{88}{red}
+\skillentry{Mobile Development}{85}{orange}
+\skillentry{Cloud Computing}{92}{purple}
+\skillentry{Mentoria Técnica}{98}{green}
+}
+
+% CERTIFICAÇÕES NA COLUNA ESQUERDA - ORDEM CRESCENTE
+\sectionheader{red}{CERTIFICAÇÕES}
+{\small
+\textbf{GCP Cloud Architect} (2023) \\
+\textbf{IBM Data Engineer} (2023) \\
+\textbf{XPE Cloud Bootcamp} (2023) \\
+\textbf{Applied ML Python} (2024) \\
+\textbf{AWS AI Practitioner} (2025) \\
+}
+
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{0.54\textwidth}
+
+% EXPERIÊNCIA PROFISSIONAL
+\sectionheader{primaryblue}{EXPERIÊNCIA PROFISSIONAL}
+
+\experienceentry{Professor Adjunto - Depto. Computação}{2025-Atual}{CEUNSP - Centro Universitário}{
+\textbf{Disciplinas:} Estrutura de Dados I/II, POO, Aplicações Internet, Mobile
+
+\textbf{PROJETO IoT INTEGRADOR - Detecção de Anomalias:}
+\begin{itemize}[leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt]
+    \item \textbf{Hardware:} ESP32 + MPU6050 para dados inerciais
+    \item \textbf{Backend:} XAMPP com painel PHP/MySQL  
+    \item \textbf{ML:} Python com algoritmos de detecção
+    \item \textbf{Frontend:} Interface web responsiva
+    \item \textbf{Mobile:} App Android nativo
+\end{itemize}
+
+\textbf{Impacto:} Mentoria 50+ alunos | Metodologia academia-indústria
+}
+
+\experienceentry{Professor Adjunto}{2014-2021}{CEUNSP - Centro Universitário}{
+\textbf{Disciplinas:} Física, Cálculo, Estatística, Python \\
+\textbf{Foco:} Base matemática e computacional sólida
+}
+
+% FORMAÇÃO ACADÊMICA
+\sectionheader{green}{FORMAÇÃO ACADÊMICA}
+
+\educationentry{Doutorado em Engenharia Mecânica}{2018-2022}{UNICAMP}{Análise Vibroacústica de Painéis com Ressonadores Locais}
+
+\educationentry{Mestrado em Engenharia Mecânica}{2011-2013}{UNICAMP}{Análise Eletromecânica do Giroscópio MEMS}
+
+\educationentry{Bacharelado em Física}{2006-2010}{UNICAMP}{Formação sólida em ciências exatas}
+
+\educationentry{Tecnólogo em Ciência de Dados}{2024-2026}{Faculdade Estácio}{Especialização em análise de dados e ML}
+
+\end{minipage}
+
+% =================== PROJETO DESTAQUE ===================
+\vspace{0.3em}
+\sectionheader{red}{PROJETO DESTAQUE - SISTEMA IoT COMPLETO}
+
+\colorbox{light}{%
+\begin{minipage}{\textwidth}
+\vspace{0.3em}
+\centering
+\textbf{\textcolor{red}{DETECÇÃO DE ANOMALIAS - ARQUITETURA END-TO-END}}
+\vspace{0.2em}
+
+\begin{minipage}{0.96\textwidth}
+{\small\textcolor{dark}{
+\textbf{Descrição:} Sistema completo integrando hardware, software, ML e mobile para detecção de anomalias em tempo real \\[0.05em]
+\textbf{Stack:} ESP32 + MPU6050 + Python ML + PHP Backend + Android + MySQL + Interface Web Responsiva \\[0.05em]
+\textbf{Objetivo:} Conectar teoria acadêmica com demandas reais da indústria 4.0 através de projeto transversal \\[0.05em]
+\textbf{Impacto:} Utilizado em todas as disciplinas como projeto integrador, formando profissionais completos
+}}
+\end{minipage}
+\vspace{0.3em}
+\end{minipage}
+}
+
+% =================== RODAPÉ ===================
+\vspace{0.3em}
+\colorbox{dark}{%
+\begin{minipage}{\textwidth}
+\centering
+\vspace{0.25em}
+\textcolor{white}{\textbf{Transformando dados em insights}} \textcolor{orange}{\textbf{|}} \textcolor{white}{\textbf{Conectando academia e indústria}}
+\vspace{0.25em}
+\end{minipage}
+}
+
+\end{document}
