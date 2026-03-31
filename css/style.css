@@ -566,7 +566,8 @@ img {
   text-decoration: underline;
 }
 
-.project-card .status {
+.project-card .status,
+.course-card .status {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -579,7 +580,8 @@ img {
   margin-bottom: 16px;
 }
 
-.project-card .status.implemented {
+.project-card .status.implemented,
+.course-card .status.implemented {
   background: rgba(30, 154, 166, 0.16);
   color: var(--accent-2);
 }
