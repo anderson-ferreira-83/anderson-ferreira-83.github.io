@@ -47,7 +47,7 @@ Portfolio com projetos em dados, machine learning, cloud, IoT e sistemas prediti
 https://anderson-ferreira-83.github.io/
 
 CV ATS-safe:
-Anderson_IOT_ML_cv/main_itau_ats.pdf
+Anderson_IOT_ML_cv/main.pdf
 
 ## Skills para destacar
 Python
