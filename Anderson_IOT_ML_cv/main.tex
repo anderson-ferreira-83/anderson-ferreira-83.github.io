@@ -1,19 +1,21 @@
-\documentclass[10pt,a4paper]{article}
+\documentclass[9.5pt,a4paper]{article}
 
 % Pacotes básicos
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[margin=0.5in]{geometry}
+\usepackage[top=0.38in, bottom=0.38in, left=0.45in, right=0.45in]{geometry}
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage{hyperref}
+\usepackage{tikz}
 
 % Configurações
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\itemsep}{0pt}
 
 % Cores
 \definecolor{primaryblue}{RGB}{52, 152, 219}
@@ -23,6 +25,10 @@
 \definecolor{purple}{RGB}{155, 89, 182}
 \definecolor{dark}{RGB}{52, 73, 94}
 \definecolor{light}{RGB}{236, 240, 241}
+\definecolor{itaublue}{RGB}{0, 82, 156}
+\definecolor{itauorange}{RGB}{255, 140, 0}
+\definecolor{barfill}{RGB}{46, 204, 113}
+\definecolor{barbg}{RGB}{220, 230, 240}
 
 % Hyperlinks
 \hypersetup{
@@ -34,27 +40,35 @@
 
 % Comandos
 \newcommand{\sectionheader}[2]{
-    \vspace{0.3em}
+    \vspace{0.18em}
     {\large\bfseries\textcolor{#1}{#2}} \\
     \textcolor{#1}{\rule{\linewidth}{1.5pt}}
-    \vspace{0.2em}
+    \vspace{0.1em}
 }
 
 \newcommand{\skillentry}[3]{
     \textbf{#1} \hfill \textcolor{#3}{\textbf{#2\%}} \\[0.1em]
 }
 
+% Barra de alinhamento com TikZ
+\newcommand{\alignbar}[2]{%
+  \begin{tikzpicture}[baseline=-0.5ex]
+    \fill[barbg] (0,0) rectangle (3.2cm, 0.22cm);
+    \fill[#2] (0,0) rectangle (#1cm, 0.22cm);
+  \end{tikzpicture}%
+}
+
 \newcommand{\experienceentry}[4]{
     \textcolor{primaryblue}{\textbf{#1}} \hfill \textcolor{dark}{\textbf{#2}} \\
     \textcolor{dark}{\textit{#3}} \\
     {\small\textcolor{dark}{#4}}
-    \vspace{0.3em}
+    \vspace{0.15em}
 }
 
 \newcommand{\educationentry}[4]{
     \textcolor{green}{\textbf{#1}} \hfill \textcolor{dark}{\textbf{#2}} \\
     {\small\textcolor{dark}{\textbf{#3}}} \\
-    {\footnotesize\textcolor{dark}{#4}} \\[0.15em]
+    {\footnotesize\textcolor{dark}{#4}} \\[0.08em]
 }
 
 \begin{document}
@@ -77,10 +91,41 @@
 \hline
 \textbf{Local} & \textbf{Telefone} & \textbf{Email} & \textbf{GitHub} & \textbf{LinkedIn} & \textbf{Portfólio} \\
 \hline
-Salto, SP & 11 95850-9690 & a058899@dac.unicamp.br & \href{https://github.com/anderson-ferreira-83}{anderson-ferreira-83} & \href{https://www.linkedin.com/in/anderson-ferreira-1a473138/}{anderson-ferreira} & \href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83} \\
+Salto, SP & 11 95850-9690 & a058899@dac.unicamp.br &
+\href{https://github.com/anderson-ferreira-83}{anderson-ferreira-83} &
+\href{https://www.linkedin.com/in/anderson-ferreira-1a473138/}{anderson-ferreira} &
+\href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83} \\
 \hline
 \end{tabular}
 \end{center}
+
+% =================== BLOCO ALINHAMENTO — ATS / RECRUTADOR ===================
+\vspace{0.15em}
+\colorbox{light}{%
+\begin{minipage}{\textwidth}
+\vspace{0.2em}
+{\centering\footnotesize\bfseries\textcolor{itaublue}{ALINHAMENTO COM AS HARDSKILLS DO PROGRAMA ACADÊMICOS 2026}\par}
+\vspace{0.1em}
+\begin{tabular}{@{\hspace{0.3em}} p{4.2cm} @{\hspace{0.5em}} l @{\hspace{0.6em}} p{9.5cm} @{}}
+\footnotesize\textbf{\textcolor{dark}{Dados e Analytics}} &
+  \alignbar{2.8}{primaryblue} &
+  {\scriptsize Oracle ADB · 231K registros · Pandas · ETL · EDA · Feature Engineering} \\[0.25em]
+\footnotesize\textbf{\textcolor{dark}{Linguagens e Cloud}} &
+  \alignbar{2.8}{primaryblue} &
+  {\scriptsize Python · Java · SQL · R · JavaScript · AWS · OCI · Docker · FastAPI} \\[0.25em]
+\footnotesize\textbf{\textcolor{dark}{Machine Learning e IA}} &
+  \alignbar{2.8}{primaryblue} &
+  {\scriptsize Random Forest 97,34\% CV · scikit-learn · GNB · Inferência em produção} \\[0.25em]
+\footnotesize\textbf{\textcolor{dark}{Matemática, Estatística e Finanças}} &
+  \alignbar{2.4}{orange} &
+  {\scriptsize Cohen's d · FFT · k-fold · Modelagem de risco · Scoring preditivo} \\[0.25em]
+\footnotesize\textbf{\textcolor{dark}{Processos e Metodologia Ágil}} &
+  \alignbar{2.0}{orange} &
+  {\scriptsize Sprints · Versionamento · CHANGELOG · MODEL\_REGISTRY · OKRs de pesquisa} \\[0.1em]
+\end{tabular}
+\vspace{0.1em}
+\end{minipage}
+}
 
 \vspace{0.3em}
 
@@ -90,32 +135,31 @@ Salto, SP & 11 95850-9690 & a058899@dac.unicamp.br & \href{https://github.com/an
 % RESUMO PROFISSIONAL
 \sectionheader{primaryblue}{RESUMO PROFISSIONAL}
 {\small\textcolor{dark}{
-Doutorando na \textbf{Unicamp} (defesa prevista 2026) com foco em \textbf{ML aplicado a sistemas vibroacústicos}. Desenvolvo pipelines completos de dados — da coleta com sensores IoT ao modelo em produção na nuvem (\textbf{Oracle ADB · AWS}). Publicação recente no \textbf{MSSP} (Impact Factor 8.9). Professor universitário com experiência em projetos que conectam pesquisa e aplicação real.
+Doutorando na \textbf{Unicamp} (defesa prevista 2026) com foco em \textbf{Machine Learning e IA} aplicados a sistemas vibroacústicos. Desenvolvo pipelines completos de \textbf{Dados e Analytics} — da coleta com IoT ao modelo em produção na nuvem (\textbf{Oracle ADB · AWS}). Publicação no \textbf{MSSP} (IF 8.9). Modelagem preditiva aplicada a \textbf{estratificação de risco} — base técnica transferível a scoring financeiro e análise de crédito.
 }}
 
 % STACK TECNOLÓGICO
 \sectionheader{green}{STACK TECNOLÓGICO}
 {\small
-\textcolor{orange}{\textbf{Python}} - ML / Data Science / FastAPI \\
-\textcolor{primaryblue}{\textbf{Oracle SQL / ADB}} - Banco Cloud \\
-\textcolor{red}{\textbf{scikit-learn / NumPy / Pandas}} - ML \\
-\textcolor{purple}{\textbf{AWS (IoT Core / CloudFront)}} - Cloud \\
-\textcolor{dark}{\textbf{OCI CLI / Docker}} - DevOps \\
-\textcolor{orange}{\textbf{JavaScript}} - ML no browser \\
+\textcolor{orange}{\textbf{Python}} - ML / Dados e Analytics / FastAPI \\
+\textcolor{primaryblue}{\textbf{Oracle SQL / ADB Cloud}} - Banco em nuvem \\
+\textcolor{red}{\textbf{scikit-learn / NumPy / Pandas}} - ML e IA \\
+\textcolor{purple}{\textbf{AWS (IoT Core · CloudFront)}} - Cloud \\
+\textcolor{dark}{\textbf{OCI CLI / Docker}} - DevOps / Cloud \\
+\textcolor{orange}{\textbf{JavaScript}} - Inferência ML no browser \\
 \textcolor{primaryblue}{\textbf{R / RMarkdown}} - Estatística \\
 \textcolor{green}{\textbf{ESP32 / MicroPython}} - IoT Edge \\
-\textcolor{red}{\textbf{Java / SQL}} - Backend / BD \\
+\textcolor{red}{\textbf{Java / SQL}} - Linguagens de Programação \\
 }
 
 % NÍVEIS DE EXPERTISE
 \sectionheader{orange}{NÍVEIS DE EXPERTISE}
 {\small
-\skillentry{Machine Learning}{95}{green}
-\skillentry{Data Engineering}{90}{primaryblue}
-\skillentry{Cloud (AWS / OCI)}{88}{purple}
-\skillentry{IoT / Edge Computing}{88}{red}
-\skillentry{Modelagem Estatística}{92}{orange}
-\skillentry{Pesquisa Aplicada}{97}{green}
+\skillentry{Machine Learning e IA}{95}{green}
+\skillentry{Dados e Analytics}{92}{primaryblue}
+\skillentry{Linguagens e Cloud}{90}{purple}
+\skillentry{Matemática, Estatística e Risco}{88}{orange}
+\skillentry{Metodologia Ágil}{78}{dark}
 }
 
 % CERTIFICAÇÕES
@@ -126,18 +170,18 @@ Doutorando na \textbf{Unicamp} (defesa prevista 2026) com foco em \textbf{ML apl
 \textbf{XPE Cloud Architecture Bootcamp} (2023) \\
 \textbf{Applied ML with Python} (2024) \\
 \textbf{AWS AI Practitioner} (2025) \\
+\textbf{Oracle SQL Certified Associate} (em curso) \\
 }
 
 % PUBLICAÇÕES
 \sectionheader{purple}{PUBLICAÇÕES}
 {\small
-\textbf{\href{https://www.sciencedirect.com/science/article/abs/pii/S0888327025014487}{Bandgap optimization in locally resonant metamaterial plates}} \\
-\textcolor{dark}{\textit{Mechanical Systems and Signal Processing (MSSP)}} \\
-\textcolor{purple}{CiteScore 18.0 $\cdot$ Impact Factor 8.9} $\cdot$ 2026 \\[0.3em]
-\textbf{Semi-analytical formulation for sound transmission loss} \\
-\textcolor{dark}{\textit{ICEDyn 2017 — Ericeira, Portugal}} \\[0.3em]
-\textbf{Flexural wave band gaps in multi-resonator metamaterial plates} \\
-\textcolor{dark}{\textit{ResearchGate}} \\
+\textbf{\href{https://www.sciencedirect.com/science/article/abs/pii/S0888327025014487}{Bandgap optimization --- metamaterial plates}} \\
+{\footnotesize\textcolor{purple}{MSSP · CiteScore 18.0 · IF 8.9 · 2026}} \\[0.1em]
+\textbf{Sound transmission loss --- thick plate} \\
+{\footnotesize\textcolor{dark}{ICEDyn 2017, Ericeira, Portugal}} \\[0.1em]
+\textbf{Flexural wave band gaps --- metamaterial} \\
+{\footnotesize\textcolor{dark}{ResearchGate}}
 }
 
 \end{minipage}%
@@ -148,61 +192,63 @@ Doutorando na \textbf{Unicamp} (defesa prevista 2026) com foco em \textbf{ML apl
 \sectionheader{primaryblue}{EXPERIÊNCIA PROFISSIONAL}
 
 \experienceentry{Pesquisador --- Lab. Vibroacústica (LVA)}{2019--2026}{UNICAMP --- Depto. Mecânica Computacional}{
-\textbf{Pesquisa:} ML para caracterização de metamateriais acústicos e detecção de padrões em sinais vibroacústicos \\[0.1em]
+\textbf{Área:} Machine Learning e IA aplicados a metamateriais acústicos e análise vibroacústica \\[0.1em]
 \textbf{Resultados:}
 \begin{itemize}[leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt]
-    \item Publicação MSSP 2026 (IF 8.9) --- estudo comparativo de 5 geometrias para atenuação de ondas
-    \item Modelos preditivos com validação cruzada rigorosa (k-fold, Cohen's d, holdout)
-    \item Apps interativos em produção: \href{https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/}{ShinyApps} para ensino de vibrações
+    \item Publicação MSSP 2026 (IF 8.9) --- 5 geometrias comparadas com ML
+    \item Ciclos ágeis hipótese$\to$experimento$\to$validação com CHANGELOG e MODEL\_REGISTRY
+    \item Modelos preditivos: k-fold, Cohen's d, holdout --- base para \textbf{scoring de risco}
+    \item Apps interativos em produção: \href{https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/}{ShinyApps}
 \end{itemize}
 }
 
 \experienceentry{Professor Adjunto --- Depto. Computação}{2023--Atual}{CEUNSP --- Centro Universitário}{
-\textbf{Disciplinas:} POO (Java), Estrutura de Dados I/II, Banco de Dados (Oracle SQL), Prog. Web \\[0.1em]
-\textbf{Projeto Integrador IoT} --- pipeline completo com alunos:
+\textbf{Disciplinas:} POO (Java), Estrutura de Dados I/II, Oracle SQL, Prog. Web / Backend \\[0.1em]
+\textbf{Projeto Integrador --- pipeline de Dados e Analytics com IoT:}
 \begin{itemize}[leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt]
-    \item ESP32 + MPU6050 $\to$ FastAPI $\to$ Oracle ADB Cloud $\to$ Dashboard ML
-    \item Random Forest 7 classes, \textbf{97,34\% de acurácia} (CV k-fold)
-    \item Inferência ML 100\% no browser --- sem servidor dedicado
+    \item ESP32 + MPU6050 $\to$ FastAPI $\to$ Oracle ADB Cloud (231K registros)
+    \item Random Forest 7 classes, \textbf{97,34\% acurácia} (CV k-fold) em produção
+    \item Sprints semanais: coleta $\to$ EDA $\to$ feature engineering $\to$ deploy
+    \item Metodologia iterativa com versionamento de modelos e rastreabilidade
 \end{itemize}
 }
 
-\experienceentry{Professor Adjunto}{2014--2021}{CEUNSP --- Centro Universitário}{
-\textbf{Disciplinas:} Física, Cálculo, Estatística, Python \\
-\textbf{Foco:} Base matemática e computacional para ciências exatas
+\experienceentry{Professor Adjunto}{2014--2021}{CEUNSP}{
+\textbf{Física · Cálculo · Estatística · Python} --- base matemática e computacional
 }
 
 % FORMAÇÃO ACADÊMICA
 \sectionheader{green}{FORMAÇÃO ACADÊMICA}
 
-\educationentry{Doutorado em Engenharia Mecânica}{2019--2026*}{UNICAMP --- Depto. Mecânica Computacional}{Metamateriais acústicos: otimização de band gaps e ML aplicado $\cdot$ *defesa prevista 2026}
+\educationentry{Doutorado em Engenharia Mecânica}{2019--2026*}{UNICAMP --- Depto. Mecânica Computacional}{ML e IA aplicados a metamateriais acústicos $\cdot$ \textit{*defesa prevista 2026}}
 
 \educationentry{Mestrado em Engenharia Mecânica}{2011--2013}{UNICAMP}{Análise eletromecânica do giroscópio MEMS}
 
-\educationentry{Bacharelado em Física}{2006--2010}{UNICAMP}{Formação sólida em ciências exatas e modelagem}
-
-\educationentry{Tecnólogo em Ciência de Dados}{2024--2027}{Faculdade Estácio}{Análise de dados, ML e estatística aplicada}
+\educationentry{Bacharelado em Física}{2006--2010}{UNICAMP}{Matemática e Estatística aplicadas a sistemas físicos}
 
 \end{minipage}
 
 % =================== PROJETO DESTAQUE ===================
 \vspace{0.3em}
-\sectionheader{red}{PROJETO DESTAQUE --- SISTEMA IoT COM ML EM PRODUÇÃO}
+\sectionheader{red}{PROJETO DESTAQUE --- DADOS E ANALYTICS COM ML EM PRODUÇÃO}
 
 \colorbox{light}{%
 \begin{minipage}{\textwidth}
 \vspace{0.3em}
 \centering
-\textbf{\textcolor{red}{DETECÇÃO DE ANOMALIAS VIBRATÓRIAS --- PIPELINE END-TO-END}}
+\textbf{\textcolor{red}{DETECÇÃO DE ANOMALIAS --- PIPELINE END-TO-END (IoT $\to$ Oracle Cloud $\to$ ML $\to$ Browser)}}
 \vspace{0.2em}
 
 \begin{minipage}{0.96\textwidth}
 {\small\textcolor{dark}{
-\textbf{Problema:} Classificar em tempo real o estado operacional de um equipamento rotativo a partir de dados inerciais brutos do sensor MPU-6050 \\[0.05em]
-\textbf{Stack:} ESP32 (MicroPython) $\to$ FastAPI $\to$ Oracle Autonomous DB Cloud (231K registros) $\to$ Dashboard Web com ML no browser \\[0.05em]
-\textbf{Modelo:} Random Forest 200 árvores $\cdot$ \textbf{97,34\% acurácia CV} $\cdot$ 7 classes $\cdot$ 16 features selecionadas por Cohen's d + correlação $\cdot$ Fallback GNB 93,70\% \\[0.05em]
-\textbf{Infra:} Oracle ADB Always Free (OCI CLI) $\cdot$ keepalive automatizado $\cdot$ serializaçao RF em JSON $\cdot$ inferência JavaScript sem servidor ML dedicado \\[0.05em]
-\textbf{Portfólio:} \href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83.github.io} $\cdot$ \href{https://anderson-ferreira-83.github.io/Hyperten_ML/}{Hyperten ML} (risco cardiovascular em produção)
+\textbf{Problema:} Classificar em tempo real o estado operacional de equipamento rotativo --- análogo a scoring de risco e detecção de fraudes bancárias \\[0.05em]
+\textbf{Dados e Analytics:} ESP32 $\to$ FastAPI $\to$ Oracle ADB Cloud $\cdot$ 231K registros $\cdot$ EDA completo $\cdot$ 104 features candidatas $\to$ 16 selecionadas \\[0.05em]
+\textbf{Machine Learning e IA:} Random Forest 200 árvores $\cdot$ \textbf{97,34\% acurácia CV} $\cdot$ 7 classes $\cdot$ Cohen's d + correlação $\cdot$ GNB fallback 93,70\% \\[0.05em]
+\textbf{Linguagens e Cloud:} Python · JavaScript · Oracle SQL · OCI CLI · AWS · Docker $\cdot$ Inferência ML 100\% no browser sem servidor dedicado \\[0.05em]
+\textbf{Metodologia Ágil:} Sprints de experimentos $\cdot$ MODEL\_REGISTRY versionado $\cdot$ CHANGELOG $\cdot$ rastreabilidade completa hipótese$\to$validação \\[0.05em]
+\textbf{Portfólio ao vivo:} \href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83.github.io} $\cdot$
+\href{https://d3rcs6b7bp6eub.cloudfront.net/}{Dashboard IoT} $\cdot$
+\href{https://anderson-ferreira-83.github.io/Hyperten_ML/}{Hyperten ML} (risco cardiovascular)
 }}
 \end{minipage}
 \vspace{0.3em}
@@ -215,7 +261,10 @@ Doutorando na \textbf{Unicamp} (defesa prevista 2026) com foco em \textbf{ML apl
 \begin{minipage}{\textwidth}
 \centering
 \vspace{0.25em}
-\textcolor{white}{\textbf{Pesquisa com impacto real}} \textcolor{orange}{\textbf{|}} \textcolor{white}{\textbf{Modelos em produção}} \textcolor{orange}{\textbf{|}} \textcolor{white}{\textbf{Unicamp · MSSP · Oracle Cloud · AWS}}
+\textcolor{white}{\textbf{Dados e Analytics}} \textcolor{itauorange}{\textbf{|}}
+\textcolor{white}{\textbf{Machine Learning e IA}} \textcolor{itauorange}{\textbf{|}}
+\textcolor{white}{\textbf{Linguagens e Cloud}} \textcolor{itauorange}{\textbf{|}}
+\textcolor{white}{\textbf{Unicamp · MSSP · Oracle · AWS}}
 \vspace{0.25em}
 \end{minipage}
 }

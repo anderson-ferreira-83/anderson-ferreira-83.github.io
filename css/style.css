@@ -818,6 +818,11 @@ img { max-width: 100%; display: block; }
   background: rgba(30, 154, 166, 0.16);
   color: var(--accent-2);
 }
+.project-card .status.encerrado,
+.course-card .status.encerrado {
+  background: rgba(120, 120, 120, 0.12);
+  color: var(--text-muted, #888);
+}
 
 /* Featured project cards — gradient top border */
 .project-card.featured {

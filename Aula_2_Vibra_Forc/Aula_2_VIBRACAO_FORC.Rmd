@@ -10,17 +10,32 @@ runtime: shiny
 
 <style type="text/css">
 body, td {
-   font-size: 22px;
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 860px;
+  margin: auto;
 }
-code.r{
-  font-size: 12px;
+code.r {
+  font-size: 13px;
 }
 pre {
-  font-size: 22px
+  font-size: 14px;
+  line-height: 1.5;
+}
+h1 {
+  margin-top: 2.4em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #e0e0e0;
+}
+h2 {
+  margin-top: 1.8em;
+  margin-bottom: 0.4em;
+}
+p {
+  margin-bottom: 1em;
 }
 </style>
-
----
 
 # Vibrações Forçadas
 
@@ -28,23 +43,21 @@ Na aula anterior, estudamos o comportamento de sistemas que oscilam livremente, 
 
 Exemplos práticos de vibrações forçadas estão por toda parte conforme as Figuras \@ref(fig:ex1-forcada), \@ref(fig:ex2-forcada), \@ref(fig:ex3-forcada) e \@ref(fig:ex4-forcada):
 
-```{r ex1-forcada, echo=FALSE, fig.cap='Mecanismo de manivela: ilustra como máquinas rotativas convertem movimento circular em força periódica, fonte clássica de vibração forçada.', out.width='45%', fig.align='center'}
+```{r ex1-forcada, echo=FALSE, fig.cap='Mecanismo de manivela: ilustra como máquinas rotativas convertem movimento circular em força periódica, fonte clássica de vibração forçada.', out.width='38%', fig.align='center'}
 knitr::include_graphics('motor_desbalanceado.gif')
 ```
 
-```{r ex2-forcada, echo=FALSE, fig.cap='Amortecedor de massa sintonizada (TMD) em edifício: o sistema massa-mola-amortecedor controla a resposta estrutural sob excitação dinâmica (sísmica ou vento).', out.width='45%', fig.align='center'}
+```{r ex2-forcada, echo=FALSE, fig.cap='Amortecedor de massa sintonizada (TMD) em edifício: o sistema massa-mola-amortecedor controla a resposta estrutural sob excitação dinâmica (sísmica ou vento).', out.width='38%', fig.align='center'}
 knitr::include_graphics('edificio_sismico.gif')
 ```
 
-```{r ex3-forcada, echo=FALSE, fig.cap='Oscilador mola-pêndulo com diferentes níveis de amortecimento: representa a resposta de estruturas (pontes, viadutos) sob carregamentos periódicos.', out.width='45%', fig.align='center'}
+```{r ex3-forcada, echo=FALSE, fig.cap='Oscilador mola-pêndulo com diferentes níveis de amortecimento: representa a resposta de estruturas (pontes, viadutos) sob carregamentos periódicos.', out.width='38%', fig.align='center'}
 knitr::include_graphics('ponte_forcada.gif')
 ```
 
-```{r ex4-forcada, echo=FALSE, fig.cap='Tubo acústico aberto em ressonância: a coluna de ar vibra em sua frequência natural quando excitada — princípio análogo ao ressonador de Helmholtz.', out.width='45%', fig.align='center'}
+```{r ex4-forcada, echo=FALSE, fig.cap='Tubo acústico aberto em ressonância: a coluna de ar vibra em sua frequência natural quando excitada — princípio análogo ao ressonador de Helmholtz.', out.width='38%', fig.align='center'}
 knitr::include_graphics('helmholtz.gif')
 ```
-
----
 
 ## Revisão: Superposição de Soluções
 
@@ -73,15 +86,13 @@ onde:
 
 Fisicamente, a Eq$\eqref{eq:2}$ nos diz que o sistema responde ao mesmo tempo à sua **condição inicial** (transiente) e à **força aplicada** (estacionária). Com o tempo, o transiente desaparece e resta apenas a resposta estacionária, conforme será visto adiante.
 
----
-
 # Oscilador Forçado Sem Amortecimento
 
 ## Equação de Movimento
 
 Considere o sistema massa-mola da Figura \@ref(fig:ex5-sistema-forcado), agora submetido a uma força harmônica externa $F(t) = F_0 \cos(\omega t)$ [N]:
 
-```{r ex5-sistema-forcado, echo=FALSE, fig.cap='Sistema massa-mola com excitação harmônica externa $F(t) = F_0\\cos(\\omega t)$.', out.width='60%', fig.align='center'}
+```{r ex5-sistema-forcado, echo=FALSE, fig.cap='Sistema massa-mola com excitação harmônica externa $F(t) = F_0\\cos(\\omega t)$.', out.width='52%', fig.align='center'}
 knitr::include_graphics('massa_mola_forcado.gif')
 ```
 
@@ -247,7 +258,7 @@ $$
 
 A Eq$\eqref{eq:18}$ descreve uma oscilação rápida de frequência $\frac{\omega_0 + \omega}{2} \approx \omega_0$, modulada por uma **envoltória de amplitude lentamente variável** de frequência $\frac{\omega_0 - \omega}{2}$, conforme a Figura \@ref(fig:ex6-batimento):
 
-```{r ex6-batimento, echo=FALSE, fig.cap='Fenômeno de batimento: amplitude modulada quando $\\omega \\approx \\omega_0$.', out.width='80%', fig.align='center'}
+```{r ex6-batimento, echo=FALSE, fig.cap='Fenômeno de batimento: amplitude modulada quando $\\omega \\approx \\omega_0$.', out.width='68%', fig.align='center'}
 knitr::include_graphics('batimento.gif')
 ```
 
@@ -265,11 +276,9 @@ $$
 
 A Eq$\eqref{eq:19}$ revela o comportamento mais importante da ressonância: a amplitude **cresce linearmente com o tempo** $t$, como ilustrado na Figura \@ref(fig:ex7-ressonancia). Na prática, isso leva à falha estrutural do sistema!
 
-```{r ex7-ressonancia, echo=FALSE, fig.cap='Ressonância: amplitude crescendo sem limite quando $\\omega = \\omega_0$. Compare com a queda da Ponte Tacoma da Aula 1.', out.width='80%', fig.align='center'}
+```{r ex7-ressonancia, echo=FALSE, fig.cap='Ressonância: amplitude crescendo sem limite quando $\\omega = \\omega_0$. Compare com a queda da Ponte Tacoma da Aula 1.', out.width='68%', fig.align='center'}
 knitr::include_graphics('ressonancia.gif')
 ```
-
----
 
 # Oscilador Forçado Com Amortecimento
 
@@ -277,7 +286,7 @@ knitr::include_graphics('ressonancia.gif')
 
 O sistema mais realista inclui amortecimento viscoso $b\,\dot{x}$, conforme a Figura \@ref(fig:ex8-sistema-amortecido):
 
-```{r ex8-sistema-amortecido, echo=FALSE, fig.cap='Sistema massa-mola-amortecedor com excitação harmônica.', out.width='65%', fig.align='center'}
+```{r ex8-sistema-amortecido, echo=FALSE, fig.cap='Sistema massa-mola-amortecedor com excitação harmônica.', out.width='52%', fig.align='center'}
 knitr::include_graphics('massa_mola_amortecido_forcado.gif')
 ```
 
@@ -519,8 +528,6 @@ D_2 = \frac{v_0 + \zeta\omega_0 D_1 + \delta_{st}\,H\,\omega\sin\phi}{\omega_d}
 $$
 
 O comportamento da solução completa — transiente + estacionário — pode ser explorado interativamente na seção seguinte.
-
----
 
 # Simulações Interativas
 
