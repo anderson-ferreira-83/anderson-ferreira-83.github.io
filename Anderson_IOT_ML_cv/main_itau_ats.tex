@@ -1,0 +1,92 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\input{glyphtounicode}
+\pdfgentounicode=1
+\usepackage[margin=0.52in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=1.1em,itemsep=1pt,topsep=1pt,parsep=0pt}
+\urlstyle{same}
+
+\newcommand{\cvsection}[1]{%
+    \vspace{0.4em}
+    {\large\bfseries #1}\par
+    \vspace{0.08em}
+    \hrule
+    \vspace{0.18em}
+}
+
+\newcommand{\jobentry}[4]{%
+    \textbf{#1} \hfill \textbf{#2}\par
+    \textit{#3}\par
+    #4
+    \vspace{0.15em}
+}
+
+\begin{document}
+
+{\LARGE\bfseries ANDERSON H. R. FERREIRA}\par
+\vspace{0.18em}
+{\normalsize Data Scientist | Machine Learning Engineer | Doutorando Unicamp}\par
+\vspace{0.28em}
+
+Salto, SP | +55 11 95850-9690 | \href{mailto:a058899@dac.unicamp.br}{a058899@dac.unicamp.br}\par
+\href{https://anderson-ferreira-83.github.io/}{Portfolio: anderson-ferreira-83.github.io} | \href{https://www.linkedin.com/in/anderson-ferreira-1a473138/?locale=pt}{LinkedIn: linkedin.com/in/anderson-ferreira-1a473138}\par
+\href{https://github.com/anderson-ferreira-83}{GitHub: github.com/anderson-ferreira-83}\par
+Defesa prevista ate dez/2026 | Disponibilidade hibrida em Sao Paulo entre jun/2026 e set/2026 | Elegivel ao Programa Academicos Itau 2026
+\par Dados e Analytics | Linguagens de Programacao e Cloud | Machine Learning e IA | Matematica, Estatistica e Financas (base quantitativa transferivel) | Processos e Metodologia Agil
+
+\cvsection{Resumo Profissional}
+Doutorando na Unicamp em fase final de formacao, com atuacao em Dados e Analytics, Machine Learning e IA, Cloud e Estatistica. Experiencia em pipelines end-to-end, feature engineering, validacao de modelos e implementacao com FastAPI, Oracle e AWS. Combina pesquisa aplicada e execucao tecnica em projetos de IoT e saude, com tecnicas transferiveis para risco, fraude, credit scoring, churn e areas de negocio orientadas a dados.
+
+\cvsection{Competencias-Chave}
+Dados e Analytics: ETL, EDA, Feature Engineering, validacao de modelos. Linguagens e Cloud: Python, SQL, Java, JavaScript, FastAPI, Oracle SQL, AWS, Docker. Machine Learning e IA: scikit-learn, Random Forest, SMOTE, SHAP, threshold analysis. Matematica e Estatistica: Cross-validation, Holdout, analise estatistica. Agil: Scrum (fundamentos teoricos), backlog, sprint planning, review e retrospectiva.
+
+\cvsection{Experiencia Profissional}
+\jobentry{Professor Adjunto - Departamento de Computacao}{2023--Atual}{CEUNSP - Centro Universitario}{
+\begin{itemize}
+    \item Atuei como orientador e desenvolvedor em projeto de predicao de risco de hipertensao com 4.240 amostras e 12 variaveis clinicas.
+    \item Implementei pipeline de treinamento com split estratificado, SMOTE apenas no treino e validacao cruzada 5-fold, preservando rigor metodologico e evitando data leakage.
+    \item Conduzi avaliacao orientada a classes desbalanceadas, com foco em Recall, F2-score, AUC-ROC, thresholds clinicos e interpretabilidade com SHAP.
+\end{itemize}
+}
+
+\jobentry{Pesquisador - Laboratorio de Vibroacustica}{2019--2026}{UNICAMP - Departamento de Mecanica Computacional}{
+\begin{itemize}
+    \item Publiquei pesquisa no MSSP 2026 (IF 8.9), comparando 5 geometrias com abordagem orientada a dados e validacao estatistica.
+    \item Desenvolvi pipeline IoT end-to-end com ESP32 + MPU6050, FastAPI e Oracle XE, da coleta sensorial a classificacao de 7 estados operacionais.
+    \item Expandi o espaco de atributos para 104 features candidatas e selecionei 16 finais; Random Forest de 200 arvores atingiu 97,34\% +- 0,63\% em validacao cruzada e 94,24\% em holdout.
+\end{itemize}
+}
+
+\cvsection{Projetos Selecionados}
+\textbf{IoT Anomaly Detection}\par
+\begin{itemize}
+    \item Projeto com mais de 210 mil registros em runs documentadas, 7 classes, 104 features candidatas e 16 finais para inferencia no browser sem servidor de ML dedicado.
+    \item Mantive historico versionado de modelos e execucoes em CHANGELOG, MODEL\_REGISTRY e pipeline registry.
+\end{itemize}
+
+\textbf{Hyperten ML}\par
+\begin{itemize}
+    \item Projeto de predicao de risco de hipertensao com 4.240 amostras e 12 variaveis, usando SMOTE apenas no treino para evitar data leakage em problema desbalanceado.
+    \item Avaliacao orientada a Recall e F2-score, com thresholds clinicos, SHAP e arquitetura AWS baseada em S3, CloudFront, API Gateway e Lambda.
+\end{itemize}
+
+\cvsection{Formacao Academica}
+\textbf{Doutorado em Engenharia Mecanica} - UNICAMP \hfill 2019--2026\par
+Defesa prevista ate dez/2026\par
+\textbf{Mestrado em Engenharia Mecanica} - UNICAMP \hfill 2011--2013\par
+\textbf{Licenciatura em Fisica} - UNICAMP \hfill 2006--2010
+
+\cvsection{Certificacoes e Publicacao}
+AWS AI Practitioner (2025) | Applied ML with Python (2024) | IBM Data Engineer Professional (2023) | GCP Professional Cloud Architect (2023)\par
+Mechanical Systems and Signal Processing (MSSP), 2026 | CiteScore 18.0 | Impact Factor 8.9
+
+\end{document}
