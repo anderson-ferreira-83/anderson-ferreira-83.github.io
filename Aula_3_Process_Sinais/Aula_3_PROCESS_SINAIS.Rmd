@@ -1,0 +1,1187 @@
+---
+title: "Processamento de Sinais em Vibrações — Da Amostragem à Análise Espectral"
+author: "Anderson H.R Ferreira"
+date: " **Última atualização: 01 de Abril de 2026**"
+output:
+   bookdown::html_document2: default
+   bookdown::pdf_document2: default
+runtime: shiny
+---
+
+<style type="text/css">
+body, td {
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 860px;
+  margin: auto;
+}
+code.r {
+  font-size: 13px;
+}
+pre {
+  font-size: 14px;
+  line-height: 1.5;
+}
+h1 {
+  margin-top: 2.4em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #e0e0e0;
+}
+h2 {
+  margin-top: 1.8em;
+  margin-bottom: 0.4em;
+}
+p {
+  margin-bottom: 1em;
+}
+</style>
+
+# Motivação — Por Que Processar Sinais de Vibração?
+
+Nas aulas anteriores, aprendemos a descrever o movimento de sistemas massa-mola a partir de equações diferenciais com condições iniciais e forçamentos harmônicos conhecidos. Naquele contexto, a frequência natural $\omega_0$ e a frequência de excitação $\omega$ eram **quantidades dadas**.
+
+No mundo real, entretanto, raramente conhecemos de antemão as forças que atuam sobre uma estrutura ou máquina. O que temos acesso é ao **sinal de vibração medido por um sensor** — uma sequência de valores de aceleração, velocidade ou deslocamento ao longo do tempo. A partir desses dados, precisamos inferir:
+
+- **Quais frequências** estão presentes na vibração?
+- **Quanta energia** cada frequência carrega?
+- O sistema está operando normalmente ou há um **defeito emergente**?
+
+Essa é exatamente a tarefa do **Processamento de Sinais**: transformar dados brutos no domínio do tempo em informação útil no domínio da frequência. As ferramentas que desenvolveremos nesta aula — amostragem, FFT, janelamento, PSD — são o núcleo de qualquer sistema moderno de monitoramento de condição e manutenção preditiva.
+
+Como caso concreto, ao final desta aula aplicaremos todo o ferramental desenvolvido a um sistema IoT real: um motor de ventilador instrumentado com um acelerômetro/giroscópio de 6 eixos (ESP32 + MPU6050), onde as mesmas equações aqui deduzidas foram implementadas em Python para classificar automaticamente o estado da máquina com mais de 97% de acurácia.
+
+# Sinais Analógicos e Discretos
+
+## Representação Matemática
+
+Um sinal de vibração físico é uma função **contínua** do tempo $x(t)$, com $t \in \mathbb{R}$. Sensores como acelerômetros medem $x(t)$ e produzem uma tensão analógica proporcional à aceleração — também contínua.
+
+Para processar esse sinal digitalmente, precisamos **amostrar**: registrar o valor de $x(t)$ a intervalos regulares $T_s$ [s], chamado de **período de amostragem**. O sinal discreto resultante é:
+
+$$
+x[n] = x(n \cdot T_s), \quad n = 0, 1, 2, \ldots, N-1
+\tag{1}
+\label{eq:1}
+$$
+
+A **frequência de amostragem** $f_s$ [Hz] é o inverso do período de amostragem:
+
+$$
+f_s = \frac{1}{T_s} \;\; [\text{Hz}]
+\tag{2}
+\label{eq:2}
+$$
+
+A duração total da janela de observação e a resolução em frequência que ela permite são:
+
+$$
+T_{obs} = N \cdot T_s = \frac{N}{f_s} \;\; [\text{s}]
+\tag{3}
+\label{eq:3}
+$$
+
+A Eq$\eqref{eq:3}$ já revela uma tensão fundamental: para ter boa **resolução em frequência** (distinguir componentes próximas) precisamos de $T_{obs}$ longo — ou seja, muitas amostras $N$ com $f_s$ fixo. Para ter boa **resolução temporal** (detectar eventos rápidos) precisamos de janelas curtas. Essa tensão aparece repetidamente ao longo desta aula.
+
+## Grandezas Medidas pelo MPU6050
+
+O sensor MPU6050, presente no projeto IoT desta aula, mede simultaneamente seis canais a $f_s = 100$ Hz:
+
+Canal                   | Símbolo         | Unidade   | Faixa
+:-----------------------:|:---------------:|:---------:|:-----:
+Aceleração — eixo X     | $a_x$           | g         | ±8 g
+Aceleração — eixo Y     | $a_y$           | g         | ±8 g
+Aceleração — eixo Z     | $a_z$           | g         | ±8 g
+Velocidade angular — X  | $\dot\theta_x$  | °/s       | ±500 °/s
+Velocidade angular — Y  | $\dot\theta_y$  | °/s       | ±500 °/s
+Velocidade angular — Z  | $\dot\theta_z$  | °/s       | ±500 °/s
+
+Com $f_s = 100$ Hz e janelas de $N = 100$ amostras, cada janela representa exatamente **1 segundo** de dados — uma escolha de projeto que equilibra latência de detecção e resolução espectral ($\Delta f = 1$ Hz, conforme veremos na Seção 5).
+
+# Teorema de Nyquist-Shannon e Aliasing
+
+## O Teorema Fundamental da Amostragem
+
+A questão central da amostragem é: **qual é a frequência mínima $f_s$ necessária para representar fielmente um sinal de largura de banda $f_{max}$?** A resposta é dada pelo Teorema de Nyquist-Shannon:
+
+$$
+\boxed{f_s \geq 2 \, f_{max}}
+\tag{4}
+\label{eq:4}
+$$
+
+A frequência $f_{Ny} = f_s / 2$ é chamada de **frequência de Nyquist** — ela representa o limite máximo de frequência que pode ser representado com uma dada taxa de amostragem:
+
+$$
+f_{Ny} = \frac{f_s}{2} \;\; [\text{Hz}]
+\tag{5}
+\label{eq:5}
+$$
+
+Para o MPU6050 a $f_s = 100$ Hz, temos $f_{Ny} = 50$ Hz. Qualquer componente de vibração acima de 50 Hz **não pode** ser recuperada e causará distorção no sinal discreto.
+
+## Aliasing — A Frequência Fantasma
+
+Quando $f > f_{Ny}$, o processo de amostragem faz com que essa componente de alta frequência apareça **disfarçada** como uma frequência mais baixa, chamada de **alias**:
+
+$$
+f_{alias} = \left| f - k \cdot f_s \right|, \quad k \in \mathbb{Z} \;\text{ tal que } f_{alias} \leq f_{Ny}
+\tag{6}
+\label{eq:6}
+$$
+
+A Eq$\eqref{eq:6}$ nos diz que um sinal de 110 Hz amostrado a 100 Hz aparecerá como se fosse um sinal de 10 Hz — uma frequência fantasma que pode ser erroneamente interpretada como vibração estrutural real. A simulação abaixo ilustra esse fenômeno de forma interativa:
+
+```{r echo=FALSE}
+library(shiny)
+```
+
+```{r echo=FALSE}
+fluidPage(
+  fluidRow(
+    column(6,
+      sliderInput("f_sinal",
+        label   = HTML("Frequência do sinal <i>f</i> [Hz]:"),
+        min = 0.5, max = 60, value = 8, step = 0.5, width = "100%")
+    ),
+    column(6,
+      sliderInput("fs_alias",
+        label   = HTML("Frequência de amostragem <i>f<sub>s</sub></i> [Hz]:"),
+        min = 5, max = 60, value = 20, step = 1, width = "100%")
+    )
+  ),
+  fluidRow(
+    column(12, plotOutput("plot_aliasing", height = "360px"))
+  )
+)
+```
+
+```{r echo=FALSE}
+output$plot_aliasing <- renderPlot({
+  f   <- input$f_sinal
+  fs  <- input$fs_alias
+  fny <- fs / 2
+
+  t_cont <- seq(0, 1, length.out = 2000)
+  x_cont <- sin(2 * pi * f * t_cont)
+
+  n_samp <- seq(0, 1, by = 1/fs)
+  x_samp <- sin(2 * pi * f * n_samp)
+
+  # Alias frequency
+  k      <- round(f / fs)
+  f_al   <- abs(f - k * fs)
+  x_rec  <- sin(2 * pi * f_al * t_cont)
+
+  ylim_v <- c(-1.5, 1.5)
+  par(mar = c(5, 5, 3.5, 2))
+
+  plot(t_cont, x_cont,
+       type = "l", col = "#aaaaaa", lwd = 1.5, lty = 2,
+       ylim = ylim_v,
+       xlab = "Tempo  t  [s]",
+       ylab = "Amplitude",
+       main = bquote(paste(
+         italic(f), " = ", .(f), " Hz | ",
+         italic(f[s]), " = ", .(fs), " Hz | ",
+         italic(f[Ny]), " = ", .(fny), " Hz | ",
+         italic(f[alias]), " = ", .(round(f_al, 2)), " Hz"
+       )),
+       cex.lab = 1.2, cex.main = 1.2, cex.axis = 1.0, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+
+  if (f > fny) {
+    lines(t_cont, x_rec, col = "#f56a2d", lwd = 2)
+    points(n_samp, x_samp, pch = 19, col = "#163042", cex = 1.4)
+    legend("topright",
+           legend = c(
+             paste0("Sinal original f = ", f, " Hz"),
+             paste0("Alias reconstruído f = ", round(f_al, 2), " Hz"),
+             "Amostras"),
+           col = c("#aaaaaa", "#f56a2d", "#163042"),
+           lwd = c(1.5, 2, NA), pch = c(NA, NA, 19),
+           cex = 1.0, bg = "white")
+  } else {
+    lines(t_cont, x_rec, col = "#1e9aa6", lwd = 2)
+    points(n_samp, x_samp, pch = 19, col = "#163042", cex = 1.4)
+    legend("topright",
+           legend = c(
+             paste0("Sinal original f = ", f, " Hz"),
+             "Sinal reconstruído (correto)",
+             "Amostras"),
+           col = c("#aaaaaa", "#1e9aa6", "#163042"),
+           lwd = c(1.5, 2, NA), pch = c(NA, NA, 19),
+           cex = 1.0, bg = "white")
+  }
+
+  abline(v = n_samp, col = "#dddddd", lty = 3)
+  mtext(ifelse(f > fny,
+    "ALIASING: f > f_Ny — frequencia fantasma visivel!",
+    "OK: f <= f_Ny — sinal recuperavel"),
+    side = 3, line = 0.2,
+    col  = ifelse(f > fny, "#c0392b", "#27ae60"),
+    cex  = 1.1, font = 2)
+})
+```
+
+**Implicação prática no projeto IoT:** o MPU6050 foi configurado a $f_s = 100$ Hz porque as frequências de vibração do motor de ventilador de interesse estão entre 0,5 Hz e 27 Hz — bem abaixo de $f_{Ny} = 50$ Hz. A banda de 25–50 Hz foi designada como **banda de ruído de referência** justamente por conter pouca energia física de vibração estrutural.
+
+# Série de Fourier — Decomposição em Harmônicos
+
+## Princípio
+
+Todo sinal **periódico** $x(t)$ com período $T_0$ pode ser decomposto em uma soma (potencialmente infinita) de senos e cossenos cujas frequências são múltiplos inteiros da **frequência fundamental** $f_0 = 1/T_0$. Essa é a **Série de Fourier**:
+
+$$
+x(t) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left[ a_n \cos\!\left(\frac{2\pi n t}{T_0}\right) + b_n \sin\!\left(\frac{2\pi n t}{T_0}\right) \right]
+\tag{7}
+\label{eq:7}
+$$
+
+Os coeficientes $a_n$ e $b_n$ da Eq$\eqref{eq:7}$ medem a "quantidade" de cada harmônico presente no sinal:
+
+$$
+a_n = \frac{2}{T_0} \int_0^{T_0} x(t) \cos\!\left(\frac{2\pi n t}{T_0}\right) dt
+\tag{8.1}
+\label{eq:8.1}
+$$
+
+$$
+b_n = \frac{2}{T_0} \int_0^{T_0} x(t) \sin\!\left(\frac{2\pi n t}{T_0}\right) dt
+\tag{8.2}
+\label{eq:8.2}
+$$
+
+A **amplitude** e a **fase** do $n$-ésimo harmônico são dadas por:
+
+$$
+C_n = \sqrt{a_n^2 + b_n^2}, \quad \varphi_n = \arctan\!\left(-\frac{b_n}{a_n}\right)
+\tag{9}
+\label{eq:9}
+$$
+
+## Conexão com Vibrações
+
+Em máquinas rotativas, a frequência fundamental $f_0$ corresponde à **velocidade de rotação** (em Hz). Os múltiplos $2f_0, 3f_0, \ldots$ são os **harmônicos de ordem superior** — assinaturas de desbalanceamento, excentricidade e defeitos em engrenagens. Identificar quais harmônicos estão presentes e com qual amplitude é o princípio básico da **análise de ordem**.
+
+A simulação abaixo mostra como a soma parcial de $N$ harmônicos reconstrói progressivamente diferentes formas de onda:
+
+```{r echo=FALSE}
+fluidPage(
+  fluidRow(
+    column(5,
+      sliderInput("N_fourier",
+        label = "Número de harmônicos N:",
+        min = 1, max = 25, value = 3, step = 1, width = "100%")
+    ),
+    column(7,
+      radioButtons("wave_type",
+        label = "Forma de onda:",
+        choices = list(
+          "Onda Quadrada"      = "square",
+          "Dente-de-serra"     = "sawtooth",
+          "Triangular"        = "triangle"),
+        selected  = "square",
+        inline    = TRUE)
+    )
+  ),
+  fluidRow(
+    column(7, plotOutput("plot_fourier_time",   height = "300px")),
+    column(5, plotOutput("plot_fourier_spectrum", height = "300px"))
+  )
+)
+```
+
+```{r echo=FALSE}
+fourier_approx <- function(N, type, t) {
+  x <- rep(0, length(t))
+  if (type == "square") {
+    for (k in seq(1, 2*N - 1, by = 2))
+      x <- x + (4 / (pi * k)) * sin(2 * pi * k * t)
+  } else if (type == "sawtooth") {
+    for (k in 1:N)
+      x <- x + (2 / (pi * k)) * (-1)^(k+1) * sin(2 * pi * k * t)
+  } else {  # triangle
+    for (k in seq(1, 2*N - 1, by = 2))
+      x <- x + (8 / (pi^2 * k^2)) * (-1)^((k-1)/2) * sin(2 * pi * k * t)
+  }
+  x
+}
+
+output$plot_fourier_time <- renderPlot({
+  N    <- input$N_fourier
+  type <- input$wave_type
+  t    <- seq(0, 2, length.out = 2000)
+
+  # Ideal waveform
+  x_ideal <- switch(type,
+    square   = ifelse(sin(2*pi*t) >= 0, 1, -1),
+    sawtooth = 2 * (t %% 1) - 1,
+    triangle = 2 * abs(2 * (t %% 1) - 1) - 1
+  )
+  x_approx <- fourier_approx(N, type, t)
+
+  par(mar = c(4.5, 4.5, 3, 1.5))
+  plot(t, x_ideal,
+       type = "l", col = "#cccccc", lwd = 2, lty = 2,
+       ylim = c(-1.6, 1.6),
+       xlab = "Tempo (períodos)", ylab = "Amplitude",
+       main = paste0("Reconstrução com N = ", N, " harmônico(s)"),
+       cex.lab = 1.15, cex.main = 1.2, cex.axis = 1.0, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+  lines(t, x_approx, col = "#163042", lwd = 2.2)
+  legend("topright",
+         legend = c("Sinal ideal", paste0("Série de Fourier (N=", N, ")")),
+         col = c("#cccccc", "#163042"), lwd = c(2, 2.2), lty = c(2, 1),
+         cex = 0.95, bg = "white")
+})
+
+output$plot_fourier_spectrum <- renderPlot({
+  N    <- input$N_fourier
+  type <- input$wave_type
+  max_k <- 2 * N + 2
+
+  k_vals <- 1:max_k
+  amps   <- sapply(k_vals, function(k) {
+    if (type == "square")   return(ifelse(k %% 2 == 1, 4 / (pi * k), 0))
+    if (type == "sawtooth") return(ifelse(k <= N, 2 / (pi * k), 0))
+    if (type == "triangle") return(ifelse(k %% 2 == 1, 8 / (pi^2 * k^2), 0))
+  })
+
+  cols <- ifelse(k_vals <= N, "#163042", "#dddddd")
+
+  par(mar = c(4.5, 4.5, 3, 1.5))
+  barplot(amps, names.arg = k_vals, col = cols, border = NA,
+          xlab = "Ordem harmônica n", ylab = expression(C[n]),
+          main = "Espectro de Amplitudes",
+          cex.lab = 1.15, cex.main = 1.2, cex.axis = 1.0, las = 1)
+  grid(nx = NA, ny = NULL, col = "lightgray", lty = "dotted")
+  legend("topright",
+         legend = c("Incluído", "Não incluído"),
+         fill = c("#163042", "#dddddd"), border = NA,
+         cex = 0.95, bg = "white")
+})
+```
+
+Note como a **onda quadrada** converge muito mais lentamente que a **triangular**: isso ocorre porque a quadrada tem descontinuidades (precisa de harmônicos de alta frequência para representá-las), enquanto a triangular é contínua mas tem derivada descontínua. Essa observação tem implicação direta no janelamento espectral, conforme veremos na Seção 6.
+
+# Transformada de Fourier Discreta (DFT/FFT)
+
+## Definição
+
+Para sinais discretos finitos $x[n]$, $n = 0, \ldots, N-1$, a **Transformada de Fourier Discreta** generaliza a Série de Fourier:
+
+$$
+X[k] = \sum_{n=0}^{N-1} x[n] \, e^{-i 2\pi kn/N}, \quad k = 0, 1, \ldots, N-1
+\tag{10}
+\label{eq:10}
+$$
+
+Cada coeficiente complexo $X[k]$ da Eq$\eqref{eq:10}$ corresponde à componente de frequência:
+
+$$
+f_k = k \cdot \frac{f_s}{N} = k \cdot \Delta f \;\; [\text{Hz}]
+\tag{11}
+\label{eq:11}
+$$
+
+onde $\Delta f = f_s / N$ é a **resolução espectral** — o menor intervalo de frequência distinguível. O **espectro de magnitude** (o que visualizamos nos gráficos espectrais) é:
+
+$$
+|X[k]| = \sqrt{\Re[X[k]]^2 + \Im[X[k]]^2}
+\tag{12}
+\label{eq:12}
+$$
+
+Por simetria (para sinais reais), apenas os primeiros $N/2 + 1$ coeficientes são únicos — os demais são espelhos conjugados. Portanto, o espectro útil vai de $0$ a $f_{Ny} = f_s/2$.
+
+## Zero-Padding — Resolução Aparente
+
+Uma técnica amplamente usada (inclusive no projeto IoT desta aula) é o **zero-padding**: estender $x[n]$ com zeros até comprimento $N_{FFT} > N$ antes de calcular a DFT. Isso **não melhora a resolução real** (determinada por $T_{obs}$), mas aumenta a densidade de pontos no espectro — como interpolar uma curva já conhecida:
+
+$$
+\Delta f_{real} = \frac{f_s}{N}, \quad \Delta f_{aparente} = \frac{f_s}{N_{FFT}}
+\tag{13}
+\label{eq:13}
+$$
+
+No projeto IoT: $N = 100$ amostras, $N_{FFT} = 4096$, o que dá $\Delta f_{real} = 1$ Hz mas $\Delta f_{aparente} \approx 0{,}024$ Hz — útil para identificar com precisão a frequência do pico dominante.
+
+## FFT — O Algoritmo Eficiente
+
+O cálculo direto da DFT da Eq$\eqref{eq:10}$ requer $\mathcal{O}(N^2)$ operações. A **Fast Fourier Transform (FFT)** — algoritmo de Cooley-Tukey — reduz isso para $\mathcal{O}(N \log_2 N)$, tornando viável o processamento em tempo real em microcontroladores e sistemas embarcados.
+
+A simulação abaixo permite compor um sinal com até três componentes e visualizar seu espectro FFT em tempo real:
+
+```{r echo=FALSE}
+fluidPage(
+  fluidRow(
+    column(12, h4("Componentes do Sinal"))
+  ),
+  fluidRow(
+    column(4,
+      sliderInput("f1", label = HTML("<b>f<sub>1</sub></b> [Hz]:"),
+        min=0.5, max=45, value=5, step=0.5, width="100%"),
+      sliderInput("a1", label = HTML("A<sub>1</sub>:"),
+        min=0, max=2, value=1.0, step=0.1, width="100%")
+    ),
+    column(4,
+      sliderInput("f2", label = HTML("<b>f<sub>2</sub></b> [Hz]:"),
+        min=0.5, max=45, value=12, step=0.5, width="100%"),
+      sliderInput("a2", label = HTML("A<sub>2</sub>:"),
+        min=0, max=2, value=0.5, step=0.1, width="100%")
+    ),
+    column(4,
+      sliderInput("f3", label = HTML("<b>f<sub>3</sub></b> [Hz]:"),
+        min=0.5, max=45, value=25, step=0.5, width="100%"),
+      sliderInput("a3", label = HTML("A<sub>3</sub>:"),
+        min=0, max=2, value=0.3, step=0.1, width="100%"),
+      sliderInput("noise_fft",
+        label = HTML("Ruído &sigma;:"),
+        min=0, max=0.5, value=0.05, step=0.01, width="100%")
+    )
+  ),
+  fluidRow(
+    column(6, plotOutput("plot_fft_time",   height = "300px")),
+    column(6, plotOutput("plot_fft_spectrum", height = "300px"))
+  )
+)
+```
+
+```{r echo=FALSE}
+output$plot_fft_time <- renderPlot({
+  fs  <- 100
+  N   <- 200
+  t   <- (0:(N-1)) / fs
+  x   <- input$a1 * cos(2*pi*input$f1*t) +
+         input$a2 * cos(2*pi*input$f2*t) +
+         input$a3 * cos(2*pi*input$f3*t) +
+         rnorm(N, 0, input$noise_fft)
+
+  par(mar = c(4.5, 4.5, 3, 1.5))
+  plot(t, x, type = "l", col = "#163042", lwd = 1.8,
+       xlab = "Tempo  t  [s]",
+       ylab = "Aceleração  [g]",
+       main = "Sinal no Domínio do Tempo",
+       cex.lab = 1.15, cex.main = 1.2, cex.axis = 1.0, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+  abline(h = 0, col = "black", lwd = 0.8)
+})
+
+output$plot_fft_spectrum <- renderPlot({
+  fs  <- 100
+  N   <- 200
+  t   <- (0:(N-1)) / fs
+  x   <- input$a1 * cos(2*pi*input$f1*t) +
+         input$a2 * cos(2*pi*input$f2*t) +
+         input$a3 * cos(2*pi*input$f3*t) +
+         rnorm(N, 0, input$noise_fft)
+
+  # FFT with zero-padding
+  Nfft   <- 4096
+  X      <- fft(c(x, rep(0, Nfft - N)))
+  freqs  <- (0:(Nfft/2)) * fs / Nfft
+  mag    <- (2 / N) * Mod(X[1:(Nfft/2 + 1)])
+  mag[1] <- mag[1] / 2
+
+  # Find top 3 peaks
+  pk_idx <- order(mag, decreasing = TRUE)[1:3]
+
+  par(mar = c(4.5, 4.5, 3, 1.5))
+  plot(freqs, mag, type = "l", col = "#163042", lwd = 1.8,
+       xlab = "Frequência  f  [Hz]",
+       ylab = "|X(f)|",
+       main = "Espectro de Magnitude (FFT + zero-padding)",
+       cex.lab = 1.15, cex.main = 1.2, cex.axis = 1.0, las = 1,
+       xlim = c(0, 50))
+  grid(col = "lightgray", lty = "dotted")
+  points(freqs[pk_idx], mag[pk_idx], pch = 19, col = "#f56a2d", cex = 1.5)
+  text(freqs[pk_idx], mag[pk_idx] + 0.04,
+       labels = paste0(round(freqs[pk_idx], 1), " Hz"),
+       col = "#f56a2d", cex = 0.9, adj = 0.5)
+})
+```
+
+**Interpretação:** cada pico no espectro de magnitude corresponde a uma componente harmônica do sinal. A altura do pico é proporcional à amplitude dessa componente. Ruído branco ($\sigma > 0$) eleva o **piso de ruído** uniformemente em todas as frequências — conceito importante para definir o limiar de detecção de falhas.
+
+# Vazamento Espectral e Janelamento
+
+## O Problema do Sinal Finito
+
+Na prática, observamos o sinal por apenas $N$ amostras. Isso equivale a multiplicar o sinal $x[n]$ por uma **janela retangular** $w_R[n]$ de comprimento $N$:
+
+$$
+x_w[n] = x[n] \cdot w_R[n], \quad w_R[n] = 1 \;\text{ para } 0 \leq n \leq N-1
+\tag{14}
+\label{eq:14}
+$$
+
+No domínio da frequência, multiplicação no tempo equivale a **convolução** com a transformada da janela. A transformada da janela retangular tem lóbulos laterais (*side lobes*) de amplitude significativa, fazendo com que a energia de um pico se **"vaze"** para frequências vizinhas — fenômeno chamado de **vazamento espectral** (*spectral leakage*).
+
+## Funções de Janela
+
+Para reduzir o vazamento, aplicamos funções de janela que amortecem suavemente as bordas do sinal. As mais comuns são:
+
+$$
+w_{Hann}[n] = 0{,}5 \left[1 - \cos\!\left(\frac{2\pi n}{N-1}\right)\right]
+\tag{15.1}
+\label{eq:15.1}
+$$
+
+$$
+w_{Hamming}[n] = 0{,}54 - 0{,}46 \cos\!\left(\frac{2\pi n}{N-1}\right)
+\tag{15.2}
+\label{eq:15.2}
+$$
+
+$$
+w_{Blackman}[n] = 0{,}42 - 0{,}5\cos\!\left(\frac{2\pi n}{N-1}\right) + 0{,}08\cos\!\left(\frac{4\pi n}{N-1}\right)
+\tag{15.3}
+\label{eq:15.3}
+$$
+
+Existe um **trade-off** inevitável: janelas com menor vazamento (Blackman) têm lóbulo principal mais largo — isto é, **pior resolução em frequência**. A janela de Hann é o balanço mais usado em análise de vibração, sendo a escolha adotada no projeto IoT desta aula.
+
+```{r echo=FALSE}
+fluidPage(
+  fluidRow(
+    column(5,
+      selectInput("win_type",
+        label = "Tipo de janela:",
+        choices = list("Retangular"="rect","Hann"="hann",
+                       "Hamming"="hamming","Blackman"="blackman"),
+        selected = "hann", width = "100%")
+    ),
+    column(4,
+      sliderInput("f_window",
+        label = HTML("Frequência do sinal <i>f</i> [Hz]:"),
+        min = 1, max = 48, value = 10.3, step = 0.1, width = "100%")
+    ),
+    column(3,
+      sliderInput("N_win",
+        label = "N amostras:",
+        min = 32, max = 256, value = 100, step = 4, width = "100%")
+    )
+  ),
+  fluidRow(
+    column(6, plotOutput("plot_win_time",     height = "300px")),
+    column(6, plotOutput("plot_win_spectrum", height = "300px"))
+  )
+)
+```
+
+```{r echo=FALSE}
+make_window <- function(type, N) {
+  n <- 0:(N-1)
+  switch(type,
+    rect    = rep(1, N),
+    hann    = 0.5 * (1 - cos(2*pi*n/(N-1))),
+    hamming = 0.54 - 0.46 * cos(2*pi*n/(N-1)),
+    blackman= 0.42 - 0.5*cos(2*pi*n/(N-1)) + 0.08*cos(4*pi*n/(N-1))
+  )
+}
+
+output$plot_win_time <- renderPlot({
+  fs   <- 100
+  N    <- input$N_win
+  f    <- input$f_window
+  t    <- (0:(N-1)) / fs
+  w    <- make_window(input$win_type, N)
+  x    <- cos(2*pi*f*t)
+  xw   <- x * w
+
+  par(mar = c(4.5, 4.5, 3, 1.5))
+  plot(t, x,  type = "l", col = "#aaaaaa", lwd = 1.5, lty = 2,
+       ylim = c(-1.2, 1.2),
+       xlab = "Tempo  t  [s]",
+       ylab = "Amplitude",
+       main = paste0("Janela: ", input$win_type, "  (N = ", N, ")"),
+       cex.lab = 1.15, cex.main = 1.2, cex.axis = 1.0, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+  lines(t,  w, col = "#f56a2d", lwd = 1.5, lty = 3)
+  lines(t, xw, col = "#163042", lwd = 2.2)
+  legend("topright",
+         legend = c("Sinal original", "Janela w[n]", "Sinal janelado"),
+         col    = c("#aaaaaa", "#f56a2d", "#163042"),
+         lwd    = c(1.5, 1.5, 2.2), lty = c(2, 3, 1),
+         cex = 0.95, bg = "white")
+})
+
+output$plot_win_spectrum <- renderPlot({
+  fs   <- 100
+  N    <- input$N_win
+  f    <- input$f_window
+  t    <- (0:(N-1)) / fs
+  w    <- make_window(input$win_type, N)
+  xw   <- cos(2*pi*f*t) * w
+
+  Nfft  <- 4096
+  X     <- fft(c(xw, rep(0, Nfft - N)))
+  freqs <- (0:(Nfft/2)) * fs / Nfft
+  mag   <- Mod(X[1:(Nfft/2 + 1)])
+  mag_db <- 20 * log10(mag / max(mag) + 1e-10)
+
+  par(mar = c(4.5, 4.5, 3, 1.5))
+  plot(freqs, mag_db,
+       type = "l", col = "#163042", lwd = 2,
+       xlab = "Frequência  f  [Hz]",
+       ylab = "Magnitude  [dB]",
+       main = "Espectro (escala dB — revela vazamento)",
+       ylim = c(-80, 5),
+       xlim = c(0, 50),
+       cex.lab = 1.15, cex.main = 1.2, cex.axis = 1.0, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+  abline(h = -3,  col = "#f56a2d", lty = 2, lwd = 1)
+  abline(h = -13, col = "#1e9aa6", lty = 2, lwd = 1)
+  text(45, -2,  "−3 dB",  col = "#f56a2d", cex = 0.9)
+  text(45, -12, "−13 dB", col = "#1e9aa6", cex = 0.9)
+  abline(v = f, col = "#888888", lty = 3)
+})
+```
+
+**Observação:** experimente variar a frequência do sinal para valores **não-inteiros** de Hz (ex: 10,3 Hz) e compare a janela retangular com a Hann. O vazamento da retangular é dramaticamente maior, criando "pedestais" que podem mascarar picos vizinhos de menor amplitude — um problema grave em diagnóstico de falhas onde múltiplos harmônicos coexistem.
+
+# Densidade Espectral de Potência (PSD)
+
+## Do Espectro de Magnitude à Potência
+
+O espectro de magnitude da FFT depende do comprimento $N$ da janela: se dobrarmos $N$, as amplitudes dos picos tendem a crescer. Para uma representação que seja **independente de $N$** e que descreva a distribuição de potência por unidade de frequência, usamos a **Densidade Espectral de Potência** (PSD):
+
+$$
+S_{xx}(f) = \lim_{T \to \infty} \frac{1}{T} \left| \int_0^T x(t) e^{-i2\pi ft} dt \right|^2 \;\; \left[\frac{\text{(unid.)}^2}{\text{Hz}}\right]
+\tag{16}
+\label{eq:16}
+$$
+
+Para sinais discretos com janelamento, o **periodograma** estima a PSD da Eq$\eqref{eq:16}$ como:
+
+$$
+\hat{S}_{xx}[k] = \frac{1}{f_s \cdot \sum_{n} w^2[n]} \left| \sum_{n=0}^{N-1} x[n] w[n] e^{-i2\pi kn/N} \right|^2
+\tag{17}
+\label{eq:17}
+$$
+
+O periodograma da Eq$\eqref{eq:17}$ é, porém, um estimador de **alta variância** — seus valores flutuam muito a cada realização. Para reduzir a variância, usamos o **Método de Welch**.
+
+## Método de Welch
+
+O Método de Welch divide o sinal em $M$ segmentos sobrepostos de comprimento $L$, calcula o periodograma de cada um e faz a **média**:
+
+$$
+\hat{S}_{Welch}(f) = \frac{1}{M} \sum_{m=1}^{M} \hat{S}_{xx}^{(m)}(f)
+\tag{18}
+\label{eq:18}
+$$
+
+A Eq$\eqref{eq:18}$ revela o trade-off fundamental do método: **mais segmentos** → menor variância → PSD mais suave, mas cada segmento mais curto → pior resolução em frequência ($\Delta f = f_s / L$). A sobreposição (*overlap*) de 50–75% entre segmentos aproveita melhor os dados sem criar correlação excessiva entre estimativas.
+
+No projeto IoT desta aula foram usados: $L = 256$ amostras, sobreposição de 75%, janela Hann — resultando em $\Delta f = 100/256 \approx 0{,}39$ Hz de resolução, adequada para distinguir as bandas de velocidade do motor.
+
+```{r echo=FALSE}
+fluidPage(
+  fluidRow(
+    column(4,
+      sliderInput("psd_nperseg",
+        label = HTML("Comprimento do segmento <i>L</i>:"),
+        min = 32, max = 512, value = 128, step = 16, width = "100%")
+    ),
+    column(4,
+      sliderInput("psd_overlap",
+        label = "Sobreposição [%]:",
+        min = 0, max = 75, value = 50, step = 5, width = "100%")
+    ),
+    column(4,
+      selectInput("psd_win",
+        label = "Janela:",
+        choices = list("Retangular"="rect","Hann"="hann",
+                       "Hamming"="hamming","Blackman"="blackman"),
+        selected = "hann", width = "100%")
+    )
+  ),
+  fluidRow(
+    column(12, plotOutput("plot_welch", height = "370px"))
+  ),
+  fluidRow(
+    column(12, verbatimTextOutput("welch_info"))
+  )
+)
+```
+
+```{r echo=FALSE}
+welch_psd <- function(x, fs, nperseg, overlap_pct, win_type) {
+  N      <- length(x)
+  step   <- max(1, round(nperseg * (1 - overlap_pct / 100)))
+  w      <- make_window(win_type, nperseg)
+  starts <- seq(1, N - nperseg + 1, by = step)
+  M      <- length(starts)
+  Nfft   <- nperseg
+  psd    <- rep(0, Nfft %/% 2 + 1)
+  scale  <- fs * sum(w^2)
+  for (s in starts) {
+    seg  <- x[s:(s + nperseg - 1)] * w
+    X    <- fft(seg)
+    P    <- (Mod(X)^2) / scale
+    psd  <- psd + P[1:(Nfft %/% 2 + 1)]
+  }
+  psd    <- psd / M
+  psd[2:(length(psd)-1)] <- 2 * psd[2:(length(psd)-1)]
+  freqs  <- (0:(Nfft %/% 2)) * fs / Nfft
+  list(f = freqs, P = psd, M = M)
+}
+
+output$plot_welch <- renderPlot({
+  set.seed(42)
+  fs   <- 100
+  N    <- 1024
+  t    <- (0:(N-1)) / fs
+  x    <- 1.0 * cos(2*pi*5*t)  +
+          0.6 * cos(2*pi*12*t) +
+          0.3 * cos(2*pi*22*t) +
+          rnorm(N, 0, 0.4)
+
+  res  <- welch_psd(x, fs, input$psd_nperseg, input$psd_overlap, input$psd_win)
+
+  par(mar = c(5, 5, 3.5, 2))
+  plot(res$f, 10*log10(res$P + 1e-12),
+       type = "l", col = "#163042", lwd = 2,
+       xlab = "Frequência  f  [Hz]",
+       ylab = expression(paste("PSD  [dB re (m/s"^2*")²/Hz]")),
+       main = bquote(paste(
+         "PSD Welch | L = ", .(input$psd_nperseg),
+         " | Overlap = ", .(input$psd_overlap), "% | ",
+         Delta*f, " = ", .(round(fs/input$psd_nperseg, 2)), " Hz | M = ", .(res$M), " seg."
+       )),
+       xlim = c(0, 50),
+       cex.lab = 1.2, cex.main = 1.15, cex.axis = 1.0, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+  abline(v = c(5, 12, 22), col = "#f56a2d", lty = 3, lwd = 1.5)
+  text(c(5, 12, 22), par("usr")[4] * 0.97,
+       labels = c("5 Hz", "12 Hz", "22 Hz"),
+       col = "#f56a2d", cex = 0.9, adj = c(0.5, 1))
+})
+
+output$welch_info <- renderText({
+  fs      <- 100
+  L       <- input$psd_nperseg
+  overlap <- input$psd_overlap
+  step    <- max(1, round(L * (1 - overlap / 100)))
+  N       <- 1024
+  M       <- length(seq(1, N - L + 1, by = step))
+  df      <- fs / L
+  paste0(
+    "Resolução espectral : Δf = ", round(df, 3), " Hz\n",
+    "Nº de segmentos     : M  = ", M, "\n",
+    "Passo entre janelas : step = ", step, " amostras = ", round(step/fs*1000), " ms"
+  )
+})
+```
+
+# STFT e Espectrograma
+
+## Sinais Não-Estacionários
+
+A FFT e a PSD assumem que o sinal é **estacionário** — suas propriedades estatísticas não mudam com o tempo. Vibrações reais frequentemente violam essa hipótese: durante a **partida de um motor**, a frequência de vibração aumenta progressivamente à medida que a rotação sobe.
+
+Para esses casos, a **Short-Time Fourier Transform (STFT)** divide o sinal em janelas temporais sobrepostas e calcula a FFT de cada uma:
+
+$$
+\text{STFT}_{x}(\tau, f) = \int_{-\infty}^{\infty} x(t) \, w(t - \tau) \, e^{-i2\pi ft} \, dt
+\tag{19}
+\label{eq:19}
+$$
+
+O módulo ao quadrado da Eq$\eqref{eq:19}$ é o **espectrograma** — um mapa 2D onde o eixo horizontal é o tempo $\tau$, o eixo vertical é a frequência $f$, e a intensidade de cor representa a potência:
+
+$$
+\text{Espectrograma}(\tau, f) = \left| \text{STFT}_{x}(\tau, f) \right|^2
+\tag{20}
+\label{eq:20}
+$$
+
+O espectrograma revela **quando** cada frequência está ativa — informação completamente perdida na FFT global.
+
+```{r echo=FALSE}
+fluidPage(
+  fluidRow(
+    column(4,
+      sliderInput("stft_nperseg",
+        label = "Tamanho da janela STFT:",
+        min = 16, max = 128, value = 32, step = 8, width = "100%")
+    ),
+    column(4,
+      sliderInput("stft_overlap",
+        label = "Sobreposição [%]:",
+        min = 0, max = 90, value = 75, step = 5, width = "100%")
+    ),
+    column(4,
+      selectInput("stft_signal",
+        label = "Sinal de teste:",
+        choices = list(
+          "Partida de motor (freq. crescente)" = "chirp",
+          "Dois regimes estáveis"              = "twofreq",
+          "Impacto transitório"                = "impact"),
+        selected = "chirp", width = "100%")
+    )
+  ),
+  fluidRow(
+    column(5, plotOutput("plot_stft_time",   height = "260px")),
+    column(7, plotOutput("plot_stft_spec",   height = "260px"))
+  )
+)
+```
+
+```{r echo=FALSE}
+output$plot_stft_time <- renderPlot({
+  fs  <- 100; N <- 512
+  t   <- (0:(N-1)) / fs
+  x   <- switch(input$stft_signal,
+    chirp   = sin(2*pi*(1 + 15*t/(max(t)))*t) + rnorm(N, 0, 0.15),
+    twofreq = ifelse(t < 2.5,
+                sin(2*pi*5*t),
+                sin(2*pi*18*t)) + rnorm(N, 0, 0.15),
+    impact  = {
+      sig <- rnorm(N, 0, 0.05)
+      idx <- which(t >= 1.5 & t <= 2.0)
+      sig[idx] <- sig[idx] + 2*exp(-8*(t[idx]-1.75)^2)*sin(2*pi*15*(t[idx]-1.75))
+      sig
+    }
+  )
+  par(mar = c(4, 4.5, 3, 1.5))
+  plot(t, x, type = "l", col = "#163042", lwd = 1.5,
+       xlab = "Tempo  t  [s]",
+       ylab = "Amplitude",
+       main = "Sinal no Tempo",
+       cex.lab = 1.1, cex.main = 1.15, las = 1)
+  grid(col = "lightgray", lty = "dotted")
+})
+
+output$plot_stft_spec <- renderPlot({
+  fs      <- 100; N <- 512
+  t       <- (0:(N-1)) / fs
+  x       <- switch(input$stft_signal,
+    chirp   = sin(2*pi*(1 + 15*t/(max(t)))*t) + rnorm(N, 0, 0.15),
+    twofreq = ifelse(t < 2.5,
+                sin(2*pi*5*t),
+                sin(2*pi*18*t)) + rnorm(N, 0, 0.15),
+    impact  = {
+      sig <- rnorm(N, 0, 0.05)
+      idx <- which(t >= 1.5 & t <= 2.0)
+      sig[idx] <- sig[idx] + 2*exp(-8*(t[idx]-1.75)^2)*sin(2*pi*15*(t[idx]-1.75))
+      sig
+    }
+  )
+  nperseg <- input$stft_nperseg
+  step    <- max(1, round(nperseg * (1 - input$stft_overlap/100)))
+  w       <- make_window("hann", nperseg)
+  starts  <- seq(1, N - nperseg + 1, by = step)
+  n_t     <- length(starts)
+  n_f     <- nperseg %/% 2 + 1
+  spec    <- matrix(0, nrow = n_f, ncol = n_t)
+  for (j in seq_along(starts)) {
+    seg       <- x[starts[j]:(starts[j]+nperseg-1)] * w
+    X         <- fft(seg)
+    spec[, j] <- log10(Mod(X[1:n_f])^2 + 1e-6)
+  }
+  t_centers <- (starts + nperseg/2 - 1) / fs
+  f_centers <- (0:(n_f-1)) * fs / nperseg
+
+  par(mar = c(4, 4.5, 3, 4))
+  image(t_centers, f_centers, t(spec),
+        col  = hcl.colors(64, "YlOrRd", rev = FALSE),
+        xlab = "Tempo  t  [s]",
+        ylab = "Frequência  f  [Hz]",
+        main = paste0("Espectrograma (janela = ", nperseg, " amostras)"),
+        cex.lab = 1.1, cex.main = 1.15, las = 1)
+  box()
+})
+```
+
+**Princípio da Incerteza de Heisenberg–Gabor:** assim como na mecânica quântica, existe uma limitação fundamental na resolução simultânea de tempo e frequência num espectrograma:
+
+$$
+\Delta t \cdot \Delta f \geq \frac{1}{4\pi}
+\tag{21}
+\label{eq:21}
+$$
+
+Janelas curtas → boa resolução temporal, fraca resolução em frequência. Janelas longas → o oposto. Experimente variar o tamanho da janela na simulação acima e observe esse efeito.
+
+# Características Espectrais para Diagnóstico de Máquinas
+
+## Do Espectro às Features
+
+A análise visual de espectros é útil, mas o diagnóstico automatizado requer **características numéricas** (*features*) que quantifiquem aspectos relevantes do espectro. Para um espectro discreto $|X[k]|$ com $K = N/2 + 1$ linhas espectrais, as principais características são:
+
+**Frequência Dominante** — a frequência com maior magnitude:
+$$
+f_{dom} = f_{k^*}, \quad k^* = \arg\max_k |X[k]|
+\tag{22}
+\label{eq:22}
+$$
+
+**Energia em Banda** — integral da PSD em um intervalo $[f_a, f_b]$:
+$$
+E_{[f_a, f_b]} = \sum_{f_a \leq f_k \leq f_b} |X[k]|^2 \cdot \Delta f
+\tag{23}
+\label{eq:23}
+$$
+
+**Centroide Espectral** — "centro de massa" do espectro (indica deslocamento para altas frequências):
+$$
+\bar{f} = \frac{\sum_k f_k \, |X[k]|}{\sum_k |X[k]|}
+\tag{24}
+\label{eq:24}
+$$
+
+**Espalhamento Espectral** — desvio em torno do centroide (indica quão concentrado é o espectro):
+$$
+\sigma_f = \sqrt{\frac{\sum_k (f_k - \bar{f})^2 \, |X[k]|}{\sum_k |X[k]|}}
+\tag{25}
+\label{eq:25}
+$$
+
+**Achatamento Espectral** (*Spectral Flatness*) — razão entre média geométrica e aritmética:
+$$
+\text{SF} = \frac{\left(\prod_k |X[k]|\right)^{1/K}}{\frac{1}{K}\sum_k |X[k]|} \in [0, 1]
+\tag{26}
+\label{eq:26}
+$$
+
+$\text{SF} \approx 1$ indica ruído branco (energia distribuída uniformemente); $\text{SF} \approx 0$ indica sinal tonal (energia concentrada em poucas frequências). É uma feature **invariante à amplitude** — útil quando o sensor pode sofrer deriva de ganho.
+
+**Fator de Crista** (*Crest Factor*) — sensível a impactos e defeitos de rolamentos:
+$$
+CF = \frac{\max|x[n]|}{x_{rms}}, \quad x_{rms} = \sqrt{\frac{1}{N}\sum_n x[n]^2}
+\tag{27}
+\label{eq:27}
+$$
+
+**Curtose** — detecta impulsividade no sinal no domínio do tempo:
+$$
+K_4 = \frac{\frac{1}{N}\sum_n (x[n] - \bar{x})^4}{\left(\frac{1}{N}\sum_n (x[n] - \bar{x})^2\right)^2}
+\tag{28}
+\label{eq:28}
+$$
+
+Para sinais gaussianos (ruído normal) $K_4 \approx 3$. Sinais com impactos (defeitos de rolamentos em fase inicial) apresentam $K_4 > 6$ — isso é a base do **Kurtosis Bearing Fault Detection**.
+
+A tabela abaixo resume as características e sua principal aplicação em diagnóstico:
+
+Característica          | Fórmula-chave        | Sensível a
+:----------------------:|:--------------------:|:----------:
+Frequência dominante    | Eq$\eqref{eq:22}$    | Velocidade de rotação
+Energia por banda       | Eq$\eqref{eq:23}$    | Carga, desbalanceamento
+Centroide espectral     | Eq$\eqref{eq:24}$    | Enrijecimento estrutural
+Espalhamento espectral  | Eq$\eqref{eq:25}$    | Ressonâncias secundárias
+Achatamento espectral   | Eq$\eqref{eq:26}$    | Deriva de ganho (drift)
+Fator de crista         | Eq$\eqref{eq:27}$    | Defeitos de rolamento
+Curtose                 | Eq$\eqref{eq:28}$    | Impactos transitórios
+
+# Aplicação IoT: ESP32 + MPU6050
+
+## Visão Geral do Sistema
+
+Toda a teoria desenvolvida até aqui foi aplicada a um sistema de **monitoramento preditivo de ventilador industrial** baseado em hardware de baixo custo. O sensor MPU6050 foi instalado diretamente sobre o motor e conectado a um ESP32, que envia os dados a 100 Hz para um banco de dados Oracle via FastAPI.
+
+```{r echo=FALSE, fig.cap='Pipeline completo do sistema IoT de monitoramento de vibração: sensor MPU6050 → ESP32 → FastAPI → Oracle → Python (FFT/PSD/Features) → Classificador RF.', out.width='90%', fig.align='center'}
+# Diagrama textual do pipeline renderizado em R
+par(mar = c(0,0,0,0), bg = "#f9f9f9")
+plot(NULL, xlim=c(0,10), ylim=c(0,3), axes=FALSE, xlab="", ylab="")
+
+boxes <- data.frame(
+  x   = c(0.5, 2.3, 4.1, 5.9, 7.7),
+  y   = c(1.5, 1.5, 1.5, 1.5, 1.5),
+  lbl = c("MPU6050\nESP32", "FastAPI\nOracle XE", "Janela\nHann N=100",
+          "FFT\nn=4096", "Random\nForest"),
+  col = c("#163042", "#1e9aa6", "#f56a2d", "#f56a2d", "#163042")
+)
+
+for (i in 1:nrow(boxes)) {
+  rect(boxes$x[i]-0.75, boxes$y[i]-0.55,
+       boxes$x[i]+0.75, boxes$y[i]+0.55,
+       col = boxes$col[i], border = NA)
+  text(boxes$x[i], boxes$y[i], boxes$lbl[i],
+       col = "white", cex = 0.85, font = 2)
+}
+
+arrows(x0 = c(1.25, 3.05, 4.85, 6.65),
+       y0 = rep(1.5, 4),
+       x1 = c(1.55, 3.35, 5.15, 6.95),
+       y1 = rep(1.5, 4),
+       length = 0.1, lwd = 2, col = "#555555")
+
+text(5, 0.55,
+     expression(paste(italic(f)[s], " = 100 Hz  |  N = 100  |  ",
+                      Delta*italic(f)[real], " = 1 Hz  |  ",
+                      italic(n)[FFT], " = 4096")),
+     cex = 0.9, col = "#555555")
+```
+
+## Os Sete Estados de Vibração
+
+O sistema foi projetado para classificar **sete estados operacionais** do conjunto motor-ventilador, combinando três velocidades com dois estados da hélice (girando ou travada) mais o estado desligado:
+
+Estado              | Vel. Motor | Hélice   | $f_{dom}$ medida [Hz]
+:------------------:|:----------:|:--------:|:--------------------:
+`LOW_ROT_ON`        | Baixa      | Girando  | $\approx 1{,}47$
+`LOW_ROT_OFF`       | Baixa      | Travada  | $\approx 1{,}47$ (banda alta)
+`MEDIUM_ROT_ON`     | Média      | Girando  | $\approx 2{,}20$
+`MEDIUM_ROT_OFF`    | Média      | Travada  | $\approx 2{,}22$ (banda alta)
+`HIGH_ROT_ON`       | Alta       | Girando  | $\approx 3{,}93 - 5{,}32$
+`HIGH_ROT_OFF`      | Alta       | Travada  | $\approx 4{,}00$ (banda alta)
+`FAN_OFF`           | Desligado  | Parada   | $< 0{,}5$ (ruído)
+
+As frequências dominantes medidas concordam perfeitamente com a teoria de máquinas rotativas: $f_{rot} \propto \text{velocidade angular}$, confirmando que o sistema vibra na **frequência de passagem das pás** — o harmônico fundamental de 1ª ordem.
+
+## Bandas Espectrais Calibradas
+
+Com base nos espectros coletados, foram definidas seis **bandas de energia** (Eq$\eqref{eq:23}$) calibradas para as frequências do sistema:
+
+```{r echo=FALSE, fig.cap='Bandas espectrais calibradas a partir dos dados reais do MPU6050. Cada banda captura uma característica específica do estado operacional do motor.', out.width='78%', fig.align='center'}
+par(mar = c(5, 4.5, 3, 2), bg = "white")
+
+bandas <- data.frame(
+  nome  = c("rot", "low_spd", "med_spd", "high_spd", "hi_freq", "noise"),
+  f_low = c(0.50,  1.00,  2.00,  3.50,  7.00, 25.00),
+  f_hig = c(1.80,  2.00,  3.50,  7.00, 25.00, 50.00),
+  col   = c("#1e9aa6","#163042","#f56a2d","#e74c3c","#8e44ad","#aaaaaa")
+)
+
+plot(NULL, xlim=c(0,50), ylim=c(0,1.15),
+     xlab="Frequência  f  [Hz]", ylab="",
+     main="Bandas Espectrais — Sistema MPU6050 (100 Hz)",
+     yaxt="n", cex.lab=1.2, cex.main=1.2, cex.axis=1.0, las=1)
+grid(col="lightgray", lty="dotted")
+
+for (i in 1:nrow(bandas)) {
+  rect(bandas$f_low[i], 0.15, bandas$f_hig[i], 0.85,
+       col=adjustcolor(bandas$col[i], alpha.f=0.25),
+       border=bandas$col[i], lwd=1.5)
+  mid <- (bandas$f_low[i] + bandas$f_hig[i]) / 2
+  text(mid, 0.95, bandas$nome[i], col=bandas$col[i],
+       cex=0.82, font=2, adj=0.5)
+  text(mid, 0.07,
+       paste0(bandas$f_low[i],"–",bandas$f_hig[i]," Hz"),
+       col=bandas$col[i], cex=0.75, adj=0.5)
+}
+
+abline(v=c(1.47, 2.20, 4.60), col="#333333", lty=2, lwd=1.2)
+text(c(1.47, 2.20, 4.60), 1.08,
+     c("LOW\n1.47Hz","MED\n2.20Hz","HIGH\n4.6Hz"),
+     cex=0.72, col="#333333", adj=0.5)
+```
+
+## Por que a Banda Hi-Freq (15–50 Hz) Discrimina ROT_ON vs ROT_OFF?
+
+Esta é a descoberta mais contraintuitiva do projeto: a distinção entre hélice girando e hélice travada **não** está na frequência fundamental (que é praticamente a mesma nos dois casos — determinada pela velocidade do motor), mas sim na **energia de alta frequência** (15–50 Hz).
+
+A explicação física é direta: quando a hélice gira livremente, ela atua como um **absorvedor de vibração** — a massa em rotação dissipa energia nas harmônicas de alta ordem. Quando a hélice trava, essa dissipação cessa e o motor passa a excitar o chassi com **impactos periódicos** de maior conteúdo em alta frequência. Conectando com a teoria da Aula 2: é como se o sistema fosse de subamortecido (hélice girando) para superamortecido-forçado (hélice travada), com redistribuição de energia para harmônicas superiores.
+
+A tabela abaixo mostra os valores de **d de Cohen** (tamanho de efeito) das features mais discriminantes — um $d > 0{,}8$ é considerado efeito grande:
+
+```{r echo=FALSE, fig.cap='Importância das features por tamanho de efeito (d de Cohen). Features espectrais de alta frequência dominam a discriminação ROT_ON vs ROT_OFF.', out.width='72%', fig.align='center'}
+features <- data.frame(
+  nome = c("gyro_x_fft_high","accel_x_fft_high","vibration_fft_high",
+           "accel_z_sp_p2","accel_z_fft_high","accel_x_rms",
+           "gyro_x_p25","accel_z_sp_p12","accel_z_range","accel_x_range"),
+  d    = c(1.314, 0.949, 0.948, 0.789, 0.786, 0.551, 0.515, 0.498, 0.483, 0.476),
+  tipo = c("espectral","espectral","espectral","espectral","espectral",
+           "temporal","temporal","espectral","temporal","temporal")
+)
+features$cor <- ifelse(features$tipo == "espectral", "#f56a2d", "#1e9aa6")
+
+par(mar = c(4, 8.5, 3, 2))
+bp <- barplot(rev(features$d),
+              horiz = TRUE,
+              col   = rev(features$cor),
+              border= NA,
+              names.arg = rev(features$nome),
+              las   = 1, cex.names = 0.82,
+              xlab  = "d de Cohen",
+              main  = "Top-10 Features — Importância Discriminante",
+              cex.lab = 1.1, cex.main = 1.15, xlim = c(0, 1.5))
+grid(nx = NULL, ny = NA, col = "lightgray", lty = "dotted")
+abline(v = 0.8, col = "#888888", lty = 2, lwd = 1.2)
+text(1.35, 0.3, "d > 0.8\n(efeito grande)", cex = 0.8, col = "#888888")
+legend("bottomright",
+       legend = c("Espectral", "Temporal"),
+       fill   = c("#f56a2d", "#1e9aa6"), border = NA,
+       cex = 0.9, bg = "white")
+```
+
+## Conexão com a Teoria das Aulas Anteriores
+
+O pipeline IoT implementa de forma automatizada exatamente o caminho teórico percorrido ao longo das três aulas:
+
+| Conceito | Aula | Implementação no projeto |
+|:---|:---:|:---|
+| Oscilação livre, $\omega_0 = \sqrt{k/m}$ | 1 | Frequência natural do chassi do motor |
+| Forçamento harmônico, FAD $H(r,\zeta)$ | 2 | Resposta do sensor à excitação rotativa |
+| Teorema de Nyquist, $f_s \geq 2 f_{max}$ | 3 | $f_s = 100$ Hz para $f_{max} \approx 27$ Hz |
+| Janela de Hann | 3 | Eq$\eqref{eq:15.1}$ — reduz vazamento no FFT |
+| Resolução espectral $\Delta f = f_s/N$ | 3 | $\Delta f = 1$ Hz por janela de 100 amostras |
+| Zero-padding para precisão de pico | 3 | $n_{FFT} = 4096$ → $\Delta f_{ap} = 0{,}024$ Hz |
+| Método de Welch | 3 | Eq$\eqref{eq:18}$ — PSD com $L=256$, overlap 75% |
+| Centroide/espalhamento espectral | 3 | Features P1–P14 (momentos espectrais) |
+| Energia por banda | 3 | Eq$\eqref{eq:23}$ — 6 bandas calibradas |
+| Curtose, fator de crista | 3 | Features de diagnóstico de impacto |
+
+O resultado final: **97,34% de acurácia** em validação cruzada com Random Forest treinado sobre 16 features extraídas com as ferramentas desta aula — demonstrando que teoria sólida de processamento de sinais, mesmo aplicada a hardware de $\sim$R\$30, produz sistemas industrialmente relevantes.
+
+---
+
+# Resumo das Equações Principais
+
+Equação                              | Expressão                                                         | Número
+:-----------------------------------:|:-----------------------------------------------------------------:|:------:
+Sinal discreto                       | $x[n] = x(n T_s)$                                                | Eq$\eqref{eq:1}$
+Frequência de Nyquist                | $f_{Ny} = f_s / 2$                                               | Eq$\eqref{eq:5}$
+Alias                                | $f_{alias} = \|f - k f_s\|$                                      | Eq$\eqref{eq:6}$
+Série de Fourier                     | $x(t) = \frac{a_0}{2} + \sum [a_n \cos + b_n \sin]$              | Eq$\eqref{eq:7}$
+DFT                                  | $X[k] = \sum_n x[n] e^{-i2\pi kn/N}$                             | Eq$\eqref{eq:10}$
+Resolução espectral                  | $\Delta f = f_s / N$                                              | Eq$\eqref{eq:11}$
+Janela de Hann                       | $w[n] = 0{,}5\,[1 - \cos(2\pi n/(N-1))]$                         | Eq$\eqref{eq:15.1}$
+PSD (Welch)                          | $\hat{S} = \frac{1}{M}\sum_m \hat{S}^{(m)}$                       | Eq$\eqref{eq:18}$
+STFT / Espectrograma                 | $|\text{STFT}(\tau,f)|^2$                                         | Eq$\eqref{eq:20}$
+Energia por banda                    | $E = \sum_{f_a \leq f_k \leq f_b} \|X[k]\|^2 \Delta f$           | Eq$\eqref{eq:23}$
+Centroide espectral                  | $\bar{f} = \sum_k f_k |X[k]| / \sum_k |X[k]|$                    | Eq$\eqref{eq:24}$
+Achatamento espectral                | $\text{SF} = \text{GeoMean}(|X|) / \text{ArithMean}(|X|)$        | Eq$\eqref{eq:26}$
+Curtose                              | $K_4 = \mu_4 / \sigma^4$                                          | Eq$\eqref{eq:28}$
+
+---
+
+# Referências Bibliográficas
+
+<a id="1">[1]</a> - OPPENHEIM, Alan V.; SCHAFER, Ronald W. **Discrete-Time Signal Processing**. 3. ed. Upper Saddle River: Prentice Hall, 2010. ISBN 9780131988422.
+
+<a id="2">[2]</a> - PROAKIS, John G.; MANOLAKIS, Dimitris G. **Digital Signal Processing: Principles, Algorithms and Applications**. 4. ed. Upper Saddle River: Prentice Hall, 2006.
+
+<a id="3">[3]</a> - RAO, Singiresu S. **Mechanical Vibrations**. 5. ed. Upper Saddle River: Prentice Hall, 2011. ISBN 9780132128193.
+
+<a id="4">[4]</a> - BRANDT, Anders. **Noise and Vibration Analysis: Signal Analysis and Experimental Procedures**. Chichester: Wiley, 2011.
+
+<a id="5">[5]</a> - RANDALL, Robert B. **Vibration-Based Condition Monitoring: Industrial, Aerospace and Automotive Applications**. Chichester: Wiley, 2011.
+
+<a id="6">[6]</a> - WELCH, Peter D. The Use of Fast Fourier Transform for the Estimation of Power Spectra. **IEEE Transactions on Audio and Electroacoustics**, v. 15, n. 2, p. 70–73, 1967.
+
+<a id="7">[7]</a> - ISO 10816-3:2009 — **Mechanical Vibration — Evaluation of Machine Vibration by Measurements on Non-Rotating Parts**.
+
+---
+
+# Referências para Simulação e Ferramentas
+
+<a id="8">[8]</a> - [NumPy FFT Documentation](https://numpy.org/doc/stable/reference/routines.fft.html)
+
+<a id="9">[9]</a> - [SciPy Signal Processing](https://docs.scipy.org/doc/scipy/reference/signal.html) — `scipy.signal.welch`, `scipy.signal.stft`
+
+<a id="10">[10]</a> - [The Scientist and Engineer's Guide to DSP — Steven W. Smith](http://www.dspguide.com/)
+
+<a id="11">[11]</a> - [Vibration Analysis Tutorial — Brüel & Kjær](https://www.bksv.com/en/knowledge/blog/vibration/vibration-analysis)
+
+---
+
+> **Nota sobre conexão com os notebooks:** os conceitos desta aula estão implementados diretamente nos arquivos
+> `feature_engineering.py` (FFT, Welch, bandas espectrais, momentos P1–P14),
+> `01_EDA.ipynb` (análise exploratória com espectros de magnitude e espectrogramas) e
+> `04_Spectral_Feature_Analysis.ipynb` (calibração das frequências dominantes por classe)
+> do projeto `oracle_fast_api_iot_esp32_MPU6050_project`.
