@@ -1,273 +1,100 @@
-\documentclass[9.5pt,a4paper]{article}
+\documentclass[10pt,a4paper]{article}
 
-% Pacotes básicos
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[top=0.38in, bottom=0.38in, left=0.45in, right=0.45in]{geometry}
-\usepackage{xcolor}
+\usepackage{lmodern}
+\input{glyphtounicode}
+\pdfgentounicode=1
+\usepackage[margin=0.52in]{geometry}
+\usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
-\usepackage{tabularx}
-\usepackage{array}
-\usepackage{hyperref}
-\usepackage{tikz}
 
-% Configurações
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
-\setlength{\itemsep}{0pt}
+\setlist[itemize]{leftmargin=1.1em,itemsep=1pt,topsep=1pt,parsep=0pt}
+\urlstyle{same}
 
-% Cores
-\definecolor{primaryblue}{RGB}{52, 152, 219}
-\definecolor{green}{RGB}{46, 204, 113}
-\definecolor{orange}{RGB}{230, 126, 34}
-\definecolor{red}{RGB}{231, 76, 60}
-\definecolor{purple}{RGB}{155, 89, 182}
-\definecolor{dark}{RGB}{52, 73, 94}
-\definecolor{light}{RGB}{236, 240, 241}
-\definecolor{itaublue}{RGB}{0, 82, 156}
-\definecolor{itauorange}{RGB}{255, 140, 0}
-\definecolor{barfill}{RGB}{46, 204, 113}
-\definecolor{barbg}{RGB}{220, 230, 240}
-
-% Hyperlinks
-\hypersetup{
-    colorlinks=true,
-    linkcolor=primaryblue,
-    urlcolor=primaryblue,
-    pdfborder={0 0 0}
-}
-
-% Comandos
-\newcommand{\sectionheader}[2]{
+\newcommand{\cvsection}[1]{%
+    \vspace{0.38em}
+    {\large\bfseries #1}\par
+    \vspace{0.08em}
+    \hrule
     \vspace{0.18em}
-    {\large\bfseries\textcolor{#1}{#2}} \\
-    \textcolor{#1}{\rule{\linewidth}{1.5pt}}
-    \vspace{0.1em}
 }
 
-\newcommand{\skillentry}[3]{
-    \textbf{#1} \hfill \textcolor{#3}{\textbf{#2\%}} \\[0.1em]
-}
-
-% Barra de alinhamento com TikZ
-\newcommand{\alignbar}[2]{%
-  \begin{tikzpicture}[baseline=-0.5ex]
-    \fill[barbg] (0,0) rectangle (3.2cm, 0.22cm);
-    \fill[#2] (0,0) rectangle (#1cm, 0.22cm);
-  \end{tikzpicture}%
-}
-
-\newcommand{\experienceentry}[4]{
-    \textcolor{primaryblue}{\textbf{#1}} \hfill \textcolor{dark}{\textbf{#2}} \\
-    \textcolor{dark}{\textit{#3}} \\
-    {\small\textcolor{dark}{#4}}
-    \vspace{0.15em}
-}
-
-\newcommand{\educationentry}[4]{
-    \textcolor{green}{\textbf{#1}} \hfill \textcolor{dark}{\textbf{#2}} \\
-    {\small\textcolor{dark}{\textbf{#3}}} \\
-    {\footnotesize\textcolor{dark}{#4}} \\[0.08em]
+\newcommand{\entry}[4]{%
+    \textbf{#1} \hfill \textbf{#2}\par
+    \textit{#3}\par
+    #4
+    \vspace{0.14em}
 }
 
 \begin{document}
 
-% =================== CABEÇALHO ===================
-\colorbox{primaryblue}{%
-\begin{minipage}{\textwidth}
-\centering
-\vspace{0.7em}
-{\Huge\bfseries\textcolor{white}{ANDERSON H.R. FERREIRA}} \\[0.2em]
-{\Large\textcolor{white}{Doutorando (Unicamp) $\cdot$ Cientista de Dados $\cdot$ Machine Learning Engineer}} \\
-\vspace{0.7em}
-\end{minipage}
-}
+{\LARGE\bfseries ANDERSON H. R. FERREIRA}\par
+\vspace{0.18em}
+{\normalsize Dados, Machine Learning e Analytics | Doutorando UNICAMP}\par
+\vspace{0.28em}
 
-% =================== CONTATO ===================
-\vspace{0.3em}
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
-\textbf{Local} & \textbf{Telefone} & \textbf{Email} & \textbf{GitHub} & \textbf{LinkedIn} & \textbf{Portfólio} \\
-\hline
-Salto, SP & 11 95850-9690 & a058899@dac.unicamp.br &
-\href{https://github.com/anderson-ferreira-83}{anderson-ferreira-83} &
-\href{https://www.linkedin.com/in/anderson-ferreira-1a473138/}{anderson-ferreira} &
-\href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83} \\
-\hline
-\end{tabular}
-\end{center}
+Salto, SP | +55 11 95850-9690 | \href{mailto:a058899@dac.unicamp.br}{a058899@dac.unicamp.br}\par
+\href{https://anderson-ferreira-83.github.io/}{Portfolio} | \href{https://www.linkedin.com/in/anderson-ferreira-1a473138/?locale=pt}{LinkedIn} | \href{https://github.com/anderson-ferreira-83}{GitHub}\par
+Defesa prevista: dez/2026 | Disponibilidade hibrida em Sao Paulo entre jun/2026 e set/2026
 
-% =================== BLOCO ALINHAMENTO — ATS / RECRUTADOR ===================
-\vspace{0.15em}
-\colorbox{light}{%
-\begin{minipage}{\textwidth}
-\vspace{0.2em}
-{\centering\footnotesize\bfseries\textcolor{itaublue}{ALINHAMENTO COM AS HARDSKILLS DO PROGRAMA ACADÊMICOS 2026}\par}
-\vspace{0.1em}
-\begin{tabular}{@{\hspace{0.3em}} p{4.2cm} @{\hspace{0.5em}} l @{\hspace{0.6em}} p{9.5cm} @{}}
-\footnotesize\textbf{\textcolor{dark}{Dados e Analytics}} &
-  \alignbar{2.8}{primaryblue} &
-  {\scriptsize Oracle ADB · 231K registros · Pandas · ETL · EDA · Feature Engineering} \\[0.25em]
-\footnotesize\textbf{\textcolor{dark}{Linguagens e Cloud}} &
-  \alignbar{2.8}{primaryblue} &
-  {\scriptsize Python · Java · SQL · R · JavaScript · AWS · OCI · Docker · FastAPI} \\[0.25em]
-\footnotesize\textbf{\textcolor{dark}{Machine Learning e IA}} &
-  \alignbar{2.8}{primaryblue} &
-  {\scriptsize Random Forest 97,34\% CV · scikit-learn · GNB · Inferência em produção} \\[0.25em]
-\footnotesize\textbf{\textcolor{dark}{Matemática, Estatística e Finanças}} &
-  \alignbar{2.4}{orange} &
-  {\scriptsize Cohen's d · FFT · k-fold · Modelagem de risco · Scoring preditivo} \\[0.25em]
-\footnotesize\textbf{\textcolor{dark}{Processos e Metodologia Ágil}} &
-  \alignbar{2.0}{orange} &
-  {\scriptsize Sprints · Versionamento · CHANGELOG · MODEL\_REGISTRY · OKRs de pesquisa} \\[0.1em]
-\end{tabular}
-\vspace{0.1em}
-\end{minipage}
-}
+\cvsection{Resumo}
+Doutorando em Engenharia Mecanica na UNICAMP, com atuacao aplicada em dados, machine learning, cloud e estatistica. Experiencia em modelagem preditiva, validacao de modelos, feature engineering e implementacao com Python, SQL, FastAPI, Oracle e AWS. Repertorio construido em projetos de IoT e saude, com tecnicas transferiveis para analytics, risco, fraude, churn e apoio a decisao.
 
-\vspace{0.3em}
+\cvsection{Competencias Tecnicas}
+Python, SQL, Java, JavaScript, FastAPI, Oracle SQL, AWS, Docker, scikit-learn, Random Forest, SMOTE, SHAP, ETL, EDA, Feature Engineering, Cross-validation, Holdout, Threshold Analysis, Estatistica Aplicada.
 
-% =================== LAYOUT DUAS COLUNAS ===================
-\begin{minipage}[t]{0.43\textwidth}
-
-% RESUMO PROFISSIONAL
-\sectionheader{primaryblue}{RESUMO PROFISSIONAL}
-{\small\textcolor{dark}{
-Doutorando na \textbf{Unicamp}, com defesa prevista até \textbf{dez/2026}, elegível ao Programa Acadêmicos Itaú 2026. Atuo em projetos end-to-end de \textbf{Dados e Analytics}, \textbf{Machine Learning e IA}, \textbf{Linguagens de Programação e Cloud} e \textbf{Matemática/Estatística}, da coleta com IoT ao deploy de modelos em produção (\textbf{Oracle ADB · AWS · FastAPI}). Combino pesquisa aplicada, validação estatística e metodologia ágil em problemas transferíveis para \textbf{risco, fraude, credit scoring e churn}.
-}}
-
-% STACK TECNOLÓGICO
-\sectionheader{green}{STACK TECNOLÓGICO}
-{\small
-\textcolor{orange}{\textbf{Python}} - ML / Dados e Analytics / FastAPI \\
-\textcolor{primaryblue}{\textbf{Oracle SQL / ADB Cloud}} - Banco em nuvem \\
-\textcolor{red}{\textbf{scikit-learn / NumPy / Pandas}} - ML e IA \\
-\textcolor{purple}{\textbf{AWS (IoT Core · CloudFront)}} - Cloud \\
-\textcolor{dark}{\textbf{OCI CLI / Docker}} - DevOps / Cloud \\
-\textcolor{orange}{\textbf{JavaScript}} - Inferência ML no browser \\
-\textcolor{primaryblue}{\textbf{R / RMarkdown}} - Estatística \\
-\textcolor{green}{\textbf{ESP32 / MicroPython}} - IoT Edge \\
-\textcolor{red}{\textbf{Java / SQL}} - Linguagens de Programação \\
-}
-
-% NÍVEIS DE EXPERTISE
-\sectionheader{orange}{NÍVEIS DE EXPERTISE}
-{\small
-\skillentry{Machine Learning e IA}{95}{green}
-\skillentry{Dados e Analytics}{92}{primaryblue}
-\skillentry{Linguagens e Cloud}{90}{purple}
-\skillentry{Matemática, Estatística e Risco}{88}{orange}
-\skillentry{Metodologia Ágil}{78}{dark}
-}
-
-% CERTIFICAÇÕES
-\sectionheader{red}{CERTIFICAÇÕES}
-{\small
-\textbf{GCP Professional Cloud Architect} (2023) \\
-\textbf{IBM Data Engineer Professional} (2023) \\
-\textbf{XPE Cloud Architecture Bootcamp} (2023) \\
-\textbf{Applied ML with Python} (2024) \\
-\textbf{AWS AI Practitioner} (2025) \\
-\textbf{Oracle SQL Certified Associate} (em curso) \\
-}
-
-% PUBLICAÇÕES
-\sectionheader{purple}{PUBLICAÇÕES}
-{\small
-\textbf{\href{https://www.sciencedirect.com/science/article/abs/pii/S0888327025014487}{Bandgap optimization --- metamaterial plates}} \\
-{\footnotesize\textcolor{purple}{MSSP · CiteScore 18.0 · IF 8.9 · 2026}} \\[0.1em]
-\textbf{Sound transmission loss --- thick plate} \\
-{\footnotesize\textcolor{dark}{ICEDyn 2017, Ericeira, Portugal}} \\[0.1em]
-\textbf{Flexural wave band gaps --- metamaterial} \\
-{\footnotesize\textcolor{dark}{ResearchGate}}
-}
-
-\end{minipage}%
-\hfill%
-\begin{minipage}[t]{0.54\textwidth}
-
-% EXPERIÊNCIA PROFISSIONAL
-\sectionheader{primaryblue}{EXPERIÊNCIA PROFISSIONAL}
-
-\experienceentry{Pesquisador --- Lab. Vibroacústica (LVA)}{2018--2026}{UNICAMP --- Depto. Mecânica Computacional}{
-\textbf{Área:} Machine Learning e IA aplicados a metamateriais acústicos e análise vibroacústica \\[0.1em]
-\textbf{Resultados:}
-\begin{itemize}[leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt]
-    \item Publiquei pesquisa no MSSP 2026 (IF 8.9), comparando 5 geometrias com abordagem orientada a dados e validação estatística
-    \item Estruturei ciclos hipótese$\to$experimento$\to$validação com CHANGELOG e MODEL\_REGISTRY, reforçando rastreabilidade e reprodutibilidade
-    \item Apliquei k-fold, holdout e análise estatística na construção de modelos preditivos transferíveis para \textbf{scoring de risco} e tomada de decisão
-    \item Coloquei aplicações interativas em produção para comunicação de resultados e uso prático: \href{https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/}{ShinyApps}
+\cvsection{Projetos de Dados e ML}
+\entry{Predicao de Risco com SMOTE}{Projeto aplicado}{Saude | orientador e desenvolvedor}{
+\begin{itemize}
+    \item Atuei em projeto de predicao de risco de hipertensao com 4.240 amostras e 12 variaveis clinicas.
+    \item Implementei split estratificado, SMOTE apenas no treino e validacao cruzada 5-fold, evitando data leakage em problema desbalanceado.
+    \item Estruturei avaliacao com foco em Recall, F2-score, AUC-ROC, thresholds clinicos e interpretabilidade com SHAP.
+    \item Abordagem transferivel para fraude, churn, credit scoring e outros cenarios com classe rara.
 \end{itemize}
 }
 
-\experienceentry{Professor Adjunto --- Depto. Computação}{2023--Atual}{CEUNSP --- Centro Universitário}{
-\textbf{Disciplinas:} POO (Java), Estrutura de Dados I/II, Oracle SQL, Prog. Web / Backend \\[0.1em]
-\textbf{Projeto Integrador --- pipeline de Dados e Analytics com IoT:}
-\begin{itemize}[leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt]
-    \item Estruturei pipeline ESP32 + MPU6050 $\to$ FastAPI $\to$ Oracle ADB Cloud para ingestão e análise de \textbf{231K registros}
-    \item Treinei classificador Random Forest de 7 classes com \textbf{97,34\% de acurácia} em validação cruzada k-fold, levando o modelo para produção
-    \item Conduzi sprints semanais de coleta $\to$ EDA $\to$ feature engineering $\to$ deploy, conectando metodologia ágil a entregas técnicas rastreáveis
-    \item Orientei projetos com Java, SQL, APIs web e banco em nuvem em contexto aplicado a dados, analytics e backend
+\entry{Pipeline IoT End-to-End}{Projeto aplicado}{ESP32 + FastAPI + Oracle XE}{
+\begin{itemize}
+    \item Desenvolvi pipeline de coleta, tratamento e classificacao para 7 estados operacionais com ESP32, MPU6050, FastAPI e Oracle XE.
+    \item Expandi o espaco de atributos para 104 features candidatas e selecionei 16 finais; Random Forest com 200 arvores atingiu 97,34\% +- 0,63\% em validacao cruzada e 94,24\% em holdout.
+    \item Projeto com mais de 210 mil registros em runs documentadas e inferencia no browser sem servidor de ML dedicado.
 \end{itemize}
 }
 
-\experienceentry{Professor Adjunto}{2014--2021}{CEUNSP}{
-\textbf{Física · Cálculo · Estatística · Python} --- base matemática e computacional
+\cvsection{Experiencia Profissional}
+\entry{Professor Adjunto}{fev/2025--Atual}{Cruzeiro do Sul Educacional}{
+\begin{itemize}
+    \item Docencia em Programacao Orientada a Objetos, Estrutura de Dados, Programacao Web e Fundamentos de Bancos de Dados.
+    \item Desenvolvimento de atividades praticas com Java, Python e SQL, conectando algoritmos, modelagem de dados e aplicacoes reais.
+    \item Acompanhamento de projetos aplicados com integracao entre software, dados e bancos de dados.
+\end{itemize}
 }
 
-% FORMAÇÃO ACADÊMICA
-\sectionheader{green}{FORMAÇÃO ACADÊMICA}
-
-\educationentry{Doutorado em Engenharia Mecânica}{2018--2026*}{UNICAMP --- Depto. Mecânica Computacional}{ML e IA aplicados a metamateriais acústicos $\cdot$ \textit{*defesa prevista até dez/2026}}
-
-\educationentry{Mestrado em Engenharia Mecânica}{2011--2013}{UNICAMP}{Análise eletromecânica do giroscópio MEMS}
-
-\educationentry{Bacharelado em Física}{2006--2010}{UNICAMP}{Matemática e Estatística aplicadas a sistemas físicos}
-
-\end{minipage}
-
-% =================== PROJETO DESTAQUE ===================
-\vspace{0.3em}
-\sectionheader{red}{PROJETO DESTAQUE --- DADOS E ANALYTICS COM ML EM PRODUÇÃO}
-
-\colorbox{light}{%
-\begin{minipage}{\textwidth}
-\vspace{0.3em}
-\centering
-\textbf{\textcolor{red}{DETECÇÃO DE ANOMALIAS --- PIPELINE END-TO-END (IoT $\to$ Oracle Cloud $\to$ ML $\to$ Browser)}}
-\vspace{0.2em}
-
-\begin{minipage}{0.96\textwidth}
-{\small\textcolor{dark}{
-\textbf{Problema:} Classificar em tempo real o estado operacional de equipamento rotativo --- análogo a detecção de anomalias, scoring de risco e monitoramento de eventos raros em dados bancários \\[0.05em]
-\textbf{Dados e Analytics:} ESP32 $\to$ FastAPI $\to$ Oracle ADB Cloud $\cdot$ 231K registros $\cdot$ EDA completo $\cdot$ 104 features candidatas $\to$ 16 selecionadas \\[0.05em]
-\textbf{Machine Learning e IA:} Random Forest 200 árvores $\cdot$ \textbf{97,34\% acurácia CV} $\cdot$ 7 classes $\cdot$ Cohen's d + correlação $\cdot$ GNB fallback 93,70\% \\[0.05em]
-\textbf{Classes desbalanceadas:} Hyperten ML com \textbf{SMOTE} para rebalanceamento de classes e priorização de Recall/F1 em grupos minoritários --- abordagem transferível para fraude, churn e credit scoring \\[0.05em]
-\textbf{Linguagens e Cloud:} Python · JavaScript · Oracle SQL · OCI CLI · AWS · Docker $\cdot$ Inferência ML 100\% no browser sem servidor dedicado \\[0.05em]
-\textbf{Metodologia Ágil:} Sprints de experimentos $\cdot$ MODEL\_REGISTRY versionado $\cdot$ CHANGELOG $\cdot$ rastreabilidade completa hipótese$\to$validação \\[0.05em]
-\textbf{Portfólio ao vivo:} \href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83.github.io} $\cdot$
-\href{https://d3rcs6b7bp6eub.cloudfront.net/}{Dashboard IoT} $\cdot$
-\href{https://anderson-ferreira-83.github.io/Hyperten_ML/}{Hyperten ML} (risco cardiovascular)
-}}
-\end{minipage}
-\vspace{0.3em}
-\end{minipage}
+\entry{Pesquisador de Doutorado}{2018--Atual}{UNICAMP - Engenharia Mecanica}{
+\begin{itemize}
+    \item Pesquisa aplicada em processamento de sinais, modelagem estatistica, sensores e classificacao de estados operacionais.
+    \item Publicacao aceita no Mechanical Systems and Signal Processing (MSSP), 2026, comparando 5 geometrias com abordagem orientada a dados.
+\end{itemize}
 }
 
-% =================== RODAPÉ ===================
-\vspace{0.3em}
-\colorbox{dark}{%
-\begin{minipage}{\textwidth}
-\centering
-\vspace{0.25em}
-\textcolor{white}{\textbf{Dados e Analytics}} \textcolor{itauorange}{\textbf{|}}
-\textcolor{white}{\textbf{Machine Learning e IA}} \textcolor{itauorange}{\textbf{|}}
-\textcolor{white}{\textbf{Linguagens e Cloud}} \textcolor{itauorange}{\textbf{|}}
-\textcolor{white}{\textbf{Unicamp · MSSP · Oracle · AWS}}
-\vspace{0.25em}
-\end{minipage}
+\entry{Professor Universitario}{2014--2021}{CEUNSP}{
+\begin{itemize}
+    \item Atuei em disciplinas de Probabilidade e Estatistica Basica, Fisicas Experimentais, Termodinamica Aplicada e Transferencia de Calor.
+    \item Desenvolvi atividades ligadas a regressao, testes de hipotese, inferencia estatistica e simulacao computacional.
+\end{itemize}
 }
+
+\cvsection{Formacao}
+\textbf{Doutorado em Engenharia Mecanica} - UNICAMP \hfill 2018--2026\par
+\textbf{Mestrado em Engenharia Mecanica} - UNICAMP \hfill 2011--2013\par
+\textbf{Licenciatura em Fisica} - UNICAMP \hfill 2006--2010
+
+\cvsection{Certificacoes e Publicacao}
+AWS Certified AI Practitioner | Applied Machine Learning in Python | IBM Data Engineering Professional Certificate\par
+Mechanical Systems and Signal Processing (MSSP), 2026 | Impact Factor 8.9
 
 \end{document}
