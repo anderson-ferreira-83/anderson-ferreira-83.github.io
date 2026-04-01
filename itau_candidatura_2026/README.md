@@ -44,3 +44,4 @@ Step 1: Inscricao (concluida)
 
 - Portfolio: https://anderson-ferreira-83.github.io/
 - LinkedIn: https://www.linkedin.com/in/anderson-ferreira-1a473138/?locale=pt
+- Aplicacao Gupy: https://vemproitau.gupy.io/candidates/applications/699961884
