@@ -37,6 +37,13 @@ p {
 }
 </style>
 
+<div style="background:#f4f8fb;border-left:4px solid #1e9aa6;padding:12px 20px;margin:1.2em 0 1.8em;border-radius:4px;font-size:0.85em;line-height:1.8;">
+<strong>Série — Oscilações e Processamento de Sinais</strong><br>
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/" target="_blank">← Aula 1: Oscilações Livres</a> &nbsp;|&nbsp;
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/" target="_blank">← Aula 2: Oscilações Forçadas</a> &nbsp;|&nbsp;
+<strong>Aula 3: Processamento de Sinais</strong> — você está aqui
+</div>
+
 # Motivação — Por Que Processar Sinais de Vibração?
 
 Nas aulas anteriores, aprendemos a descrever o movimento de sistemas massa-mola a partir de equações diferenciais com condições iniciais e forçamentos harmônicos conhecidos. Naquele contexto, a frequência natural $\omega_0$ e a frequência de excitação $\omega$ eram **quantidades dadas**.
@@ -50,6 +57,8 @@ No mundo real, entretanto, raramente conhecemos de antemão as forças que atuam
 Essa é exatamente a tarefa do **Processamento de Sinais**: transformar dados brutos no domínio do tempo em informação útil no domínio da frequência. As ferramentas que desenvolveremos nesta aula — amostragem, FFT, janelamento, PSD — são o núcleo de qualquer sistema moderno de monitoramento de condição e manutenção preditiva.
 
 Como caso concreto, ao final desta aula aplicaremos todo o ferramental desenvolvido a um sistema IoT real: um motor de ventilador instrumentado com um acelerômetro/giroscópio de 6 eixos (ESP32 + MPU6050), onde as mesmas equações aqui deduzidas foram implementadas em Python para classificar automaticamente o estado da máquina com mais de 97% de acurácia.
+
+**O fio condutor das três aulas** pode ser resumido em uma única cadeia lógica: na [Aula 1](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/), a relação $a(t) = -\omega_0^2\,x(t)$ mostrou que aceleração e deslocamento carregam a **mesma informação de frequência** — o acelerômetro MPU6050 mede $a(t)$ e recupera $x(t)$ por esta equação. Na [Aula 2](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/), o Fator de Amplificação Dinâmica $H(r,\zeta)$ descreveu como o sistema **amplifica ou atenua** cada frequência de excitação — esse é precisamente o perfil espectral que medimos com a FFT. Nesta aula, desenvolvemos as ferramentas para **medir e quantificar** esses fenômenos a partir de dados discretos: amostrar, transformar, janelas, PSD e, por fim, identificar $\omega_0$ e $\zeta$ diretamente do espectro.
 
 # Sinais Analógicos e Discretos
 
@@ -1109,24 +1118,158 @@ legend("bottomright",
        cex = 0.9, bg = "white")
 ```
 
+## Identificando $\omega_0$ e $\zeta$ a partir do Espectro
+
+Esta subseção fecha o ciclo das três aulas: a [Aula 1](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/) definiu $\omega_0$ e $\gamma$ como parâmetros do sistema; a [Aula 2](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/) mostrou como eles governam a resposta em frequência $H(r,\zeta)$; aqui mostramos como **medi-los experimentalmente a partir do espectro FFT**.
+
+**Método 1 — Pico espectral → $\omega_0$**
+
+O pico do espectro de magnitude de um sistema subamortecido em resposta livre ocorre em $f_d = \omega_d/(2\pi)$. Para $\zeta \ll 1$, $f_d \approx f_0 = \omega_0/(2\pi)$. No projeto IoT, os picos medidos (LOW $\approx$ 1,47 Hz, MEDIUM $\approx$ 2,20 Hz, HIGH $\approx$ 4,60 Hz) são diretamente as frequências naturais de cada regime de operação.
+
+**Método 2 — Largura de banda $-3\,\text{dB}$ → $\zeta$**
+
+A largura $\Delta f$ do pico espectral na metade da potência máxima (altura $H_{max}/\sqrt{2}$, ou $-3\,\text{dB}$) está relacionada com a razão de amortecimento por:
+
+$$
+\zeta \approx \frac{\Delta f}{2\,f_0}
+\tag{29}
+\label{eq:29_zeta}
+$$
+
+A Eq$\eqref{eq:29_zeta}$ é o **método da meia potência** — o procedimento padrão de identificação modal em engenharia estrutural. Quanto mais estreito o pico, menor $\zeta$ e maior o risco de ressonância (conforme o $H_{max} = 1/(2\zeta)$ da Aula 2).
+
+**Método 3 — Decremento logarítmico → $\gamma$ (sinal livre)**
+
+No domínio do tempo, a taxa de decaimento da envoltória exponencial $e^{-\gamma t/2}$ (Aula 1, Eq. 48.2) pode ser estimada a partir de dois picos consecutivos $x_n$ e $x_{n+1}$ do sinal amortecido:
+
+$$
+\delta = \ln\frac{x_n}{x_{n+1}} = \frac{\pi\gamma}{\omega_d} \approx 2\pi\zeta \quad (\text{para } \zeta \ll 1)
+\tag{30}
+\label{eq:30_log}
+$$
+
+O código abaixo demonstra os três métodos aplicados a um sinal sintético com parâmetros conhecidos:
+
+```{r echo=FALSE, fig.cap='Identificação experimental de $\\omega_0$ e $\\zeta$: (esq.) espectro com marcação do pico e largura $-3\\,\\text{dB}$; (dir.) decaimento livre com envoltória e decremento logarítmico.', out.width='95%', fig.align='center'}
+set.seed(7)
+fs  <- 500; N <- 2048; t <- (0:(N-1))/fs
+f0  <- 12.0; zeta <- 0.06
+wd  <- 2*pi*f0*sqrt(1 - zeta^2)
+gam <- 2*zeta*2*pi*f0
+
+# Sinal livre amortecido (resposta ao impulso)
+x_free <- exp(-gam/2*t) * cos(wd*t + 0.3) + rnorm(N, 0, 0.04)
+
+# FFT
+Nfft  <- 8192
+w_han <- 0.5*(1 - cos(2*pi*(0:(N-1))/(N-1)))
+X     <- fft(c(x_free * w_han, rep(0, Nfft - N)))
+freqs <- (0:(Nfft/2)) * fs / Nfft
+mag   <- (2/N) * Mod(X[1:(Nfft/2+1)])
+
+# Região de interesse: 5–20 Hz
+idx_roi <- which(freqs >= 5 & freqs <= 20)
+f_roi   <- freqs[idx_roi]
+m_roi   <- mag[idx_roi]
+
+# Pico
+pk    <- which.max(m_roi)
+f_pk  <- f_roi[pk]
+m_pk  <- m_roi[pk]
+
+# -3 dB bandwidth
+thr   <- m_pk / sqrt(2)
+left  <- max(which(m_roi[1:pk] < thr))
+right <- pk + min(which(m_roi[(pk+1):length(m_roi)] < thr))
+df_bw <- f_roi[right] - f_roi[left]
+zeta_est <- df_bw / (2 * f_pk)
+
+# Log decrement (first 5 cycles)
+T_d    <- 1/f0
+t_pks  <- seq(1/(4*f0), 5*T_d, by = T_d)
+x_env  <- exp(-gam/2 * t)
+xn     <- exp(-gam/2 * t_pks[1])
+xn1    <- exp(-gam/2 * t_pks[2])
+delta  <- log(xn/xn1)
+zeta_log <- delta / (2*pi)
+
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 3, 1.5))
+
+# --- Left panel: FFT ---
+plot(f_roi, m_roi, type="l", col="#163042", lwd=2,
+     xlab="Frequência  f  [Hz]", ylab="|X(f)|",
+     main=bquote(paste("Espectro FFT — pico em ", .(round(f_pk,2)), " Hz")),
+     cex.lab=1.1, cex.main=1.1, las=1)
+grid(col="lightgray", lty="dotted")
+abline(h=thr, col="#f56a2d", lty=2, lwd=1.5)
+abline(v=c(f_roi[left], f_roi[right]), col="#f56a2d", lty=3, lwd=1.2)
+points(f_pk, m_pk, pch=19, col="#163042", cex=1.8)
+text(f_pk, m_pk*1.07,
+     bquote(italic(f)[0] == .(round(f_pk,2)) ~ "Hz"),
+     col="#163042", cex=0.85, adj=0.5)
+arrows(f_roi[left], thr*0.92, f_roi[right], thr*0.92,
+       code=3, length=0.07, col="#f56a2d", lwd=1.5)
+text((f_roi[left]+f_roi[right])/2, thr*0.82,
+     bquote(paste(Delta*italic(f) == .(round(df_bw,2)), " Hz  →  ",
+                  hat(zeta) == .(round(zeta_est,3)))),
+     col="#f56a2d", cex=0.82, adj=0.5)
+mtext(bquote(paste("−3 dB  (", italic(H)[max]/sqrt(2), ")")),
+      side=4, at=thr, col="#f56a2d", cex=0.78, las=1, line=0.3)
+
+# --- Right panel: time domain ---
+t_plot <- t[t <= 6*T_d]
+x_plot <- x_free[t <= 6*T_d]
+env_p  <- x_env[t <= 6*T_d]
+
+plot(t_plot, x_plot, type="l", col="#163042", lwd=1.5,
+     xlab="Tempo  t  [s]", ylab="Amplitude",
+     main=bquote(paste("Decaimento Livre — ", delta == .(round(delta,3)),
+                        "  →  ", hat(zeta) == .(round(zeta_log,3)))),
+     cex.lab=1.1, cex.main=1.1, las=1)
+grid(col="lightgray", lty="dotted")
+lines(t_plot,  env_p, col="#f56a2d", lwd=1.8, lty=2)
+lines(t_plot, -env_p, col="#f56a2d", lwd=1.8, lty=2)
+points(t_pks[1:2], exp(-gam/2*t_pks[1:2]),
+       pch=19, col="#f56a2d", cex=1.5)
+text(t_pks[1:2]+0.01, exp(-gam/2*t_pks[1:2])+0.06,
+     labels=c(expression(italic(x)[n]), expression(italic(x)[n+1])),
+     col="#f56a2d", cex=0.9)
+legend("topright",
+       legend=c("Sinal amortecido", "Envoltória"),
+       col=c("#163042","#f56a2d"), lwd=c(1.5,1.8), lty=c(1,2),
+       cex=0.85, bg="white")
+par(mfrow=c(1,1))
+```
+
+Os dois métodos concordam: o pico identifica $f_0 =$ `r round(f_pk,2)` Hz (valor real: 12,0 Hz) e a largura de banda fornece $\hat\zeta =$ `r round(zeta_est,3)` (valor real: 0,060). No projeto IoT, esses mesmos métodos foram usados para calibrar as bandas espectrais da tabela anterior — confirmando a correspondência entre a teoria das três aulas e os dados reais do sensor.
+
 ## Conexão com a Teoria das Aulas Anteriores
 
 O pipeline IoT implementa de forma automatizada exatamente o caminho teórico percorrido ao longo das três aulas:
 
-| Conceito | Aula | Implementação no projeto |
-|:---|:---:|:---|
-| Oscilação livre, $\omega_0 = \sqrt{k/m}$ | 1 | Frequência natural do chassi do motor |
-| Forçamento harmônico, FAD $H(r,\zeta)$ | 2 | Resposta do sensor à excitação rotativa |
-| Teorema de Nyquist, $f_s \geq 2 f_{max}$ | 3 | $f_s = 100$ Hz para $f_{max} \approx 27$ Hz |
-| Janela de Hann | 3 | Eq$\eqref{eq:15.1}$ — reduz vazamento no FFT |
-| Resolução espectral $\Delta f = f_s/N$ | 3 | $\Delta f = 1$ Hz por janela de 100 amostras |
-| Zero-padding para precisão de pico | 3 | $n_{FFT} = 4096$ → $\Delta f_{ap} = 0{,}024$ Hz |
-| Método de Welch | 3 | Eq$\eqref{eq:18}$ — PSD com $L=256$, overlap 75% |
-| Centroide/espalhamento espectral | 3 | Features P1–P14 (momentos espectrais) |
-| Energia por banda | 3 | Eq$\eqref{eq:23}$ — 6 bandas calibradas |
-| Curtose, fator de crista | 3 | Features de diagnóstico de impacto |
+| Conceito | Aula | Equação | Implementação no projeto |
+|:---|:---:|:---:|:---|
+| $a(t) = -\omega_0^2 x(t)$ | [1](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/) | Eq. 4.2 | MPU6050 mede $a(t)$ → recupera $x(t)$ |
+| Amortecimento subcrítico $\omega_d$ | [1](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/) | Eq. 43 | Pico FFT em $f_d$, não em $f_0$ |
+| Forçamento harmônico, FAD $H(r,\zeta)$ | [2](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/) | Eq. 35 | FRF medida pela razão de espectros |
+| $\gamma \to \zeta = \gamma/(2\omega_0)$ | [2](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/) | Eq. 22 | Largura $-3\,\text{dB}$ → $\hat\zeta$ |
+| Teorema de Nyquist $f_s \geq 2f_{max}$ | 3 | Eq$\eqref{eq:5}$ | $f_s = 100$ Hz para $f_{max} \approx 27$ Hz |
+| Janela de Hann | 3 | Eq$\eqref{eq:15.1}$ | Reduz vazamento no espectro FFT |
+| Resolução espectral $\Delta f = f_s/N$ | 3 | Eq$\eqref{eq:11}$ | $\Delta f = 1$ Hz por janela de 100 amostras |
+| Zero-padding | 3 | Eq$\eqref{eq:13}$ | $n_{FFT} = 4096$ → $\Delta f_{ap} = 0{,}024$ Hz |
+| Método de Welch | 3 | Eq$\eqref{eq:18}$ | PSD com $L=256$, overlap 75% |
+| Identificação de $\omega_0$ e $\zeta$ | 3 | Eq$\eqref{eq:29_zeta}$, $\eqref{eq:30_log}$ | Calibração dos picos LOW/MED/HIGH |
+| Energia por banda | 3 | Eq$\eqref{eq:23}$ | 6 bandas espectrais calibradas |
+| Curtose, fator de crista | 3 | Eq$\eqref{eq:27}$, $\eqref{eq:28}$ | Diagnóstico de impactos ROT_OFF |
 
 O resultado final: **97,34% de acurácia** em validação cruzada com Random Forest treinado sobre 16 features extraídas com as ferramentas desta aula — demonstrando que teoria sólida de processamento de sinais, mesmo aplicada a hardware de $\sim$R\$30, produz sistemas industrialmente relevantes.
+
+---
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin:2em 0 1em;flex-wrap:wrap;gap:1em;">
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/" target="_blank" style="background:#163042;color:white;padding:8px 20px;border-radius:4px;text-decoration:none;font-size:0.88em;font-weight:600;">← Aula 2: Oscilações Forçadas</a>
+<span style="color:#888;font-size:0.88em;font-style:italic;">Aula 3 de 3 — Processamento de Sinais</span>
+</div>
 
 ---
 

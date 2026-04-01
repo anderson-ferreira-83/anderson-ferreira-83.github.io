@@ -18,7 +18,13 @@ pre {
   font-size: 22px
 }
 </style>
----
+
+<div style="background:#f4f8fb;border-left:4px solid #1e9aa6;padding:12px 20px;margin:1.2em 0 1.8em;border-radius:4px;font-size:0.85em;line-height:1.8;">
+<strong>Série — Oscilações e Processamento de Sinais</strong><br>
+<strong>Aula 1: Oscilações Livres</strong> — você está aqui &nbsp;|&nbsp;
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/" target="_blank">Aula 2: Oscilações Forçadas →</a> &nbsp;|&nbsp;
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_3_PROCESS_SINAIS/" target="_blank">Aula 3: Processamento de Sinais →</a>
+</div>
 
 # Vibrações
 
@@ -28,6 +34,7 @@ Para compreendermos o fenômeno de oscilações, é interessante notar algumas e
  knitr::include_graphics('tacoma.gif')
 ```
 
+> **Prévia — Aula 2:** O colapso da Ponte Tacoma (1940) é o exemplo mais emblemático de **ressonância forçada** na engenharia estrutural. A frequência natural de torção da ponte coincidiu com a frequência de excitação do vento, gerando amplificação dinâmica crescente até a ruptura. Este fenômeno será deduzido e quantificado na [Aula 2 — Oscilações Forçadas](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/).
 
 ```{r ex2-vibracao, echo=FALSE, fig.cap='Ondas de Flexão nas cordas.', out.width='45%', fig.align='center' }
  knitr::include_graphics('violao.gif')
@@ -110,6 +117,8 @@ x(t) = - \frac{a(t)}{\omega^2}
 \tag{4.2}
 \label{eq:4.2}
 $$
+
+> **Conexão com a Aula 3 — Instrumentação:** A Eq$\eqref{eq:4.2}$ é o princípio físico de funcionamento de qualquer **acelerômetro**: o sensor mede $a(t)$ diretamente, e o deslocamento é recuperado por $x(t) = -a(t)/\omega_0^2$. Na [Aula 3 — Processamento de Sinais](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_3_PROCESS_SINAIS/), o sensor **MPU6050** (embarcado em um ESP32) utiliza exatamente esta relação para monitorar vibrações de um motor — os mesmos parâmetros $m$, $k$ e $\omega_0$ desta equação determinam as frequências que aparecem nos espectros FFT medidos em tempo real.
 
 # Oscilador Harmônico Simples Livre 
 
@@ -535,6 +544,9 @@ $$
  \tag{43}
  \label{eq:43}
 $$
+
+> **Conexão com a Aula 3 — Espectro:** A frequência $\omega$ da Eq$\eqref{eq:43}$ é a **frequência natural amortecida** $\omega_d$. No domínio da frequência (Aula 3), o pico do espectro FFT de um sistema subamortecido aparece em $f_d = \omega_d/(2\pi)$ — ligeiramente **abaixo** de $f_0 = \omega_0/(2\pi)$. Além disso, a **largura do pico espectral** na potência de meia altura ($-3\,\text{dB}$) é proporcional a $\gamma$: quanto maior o amortecimento, mais largo e baixo é o pico. Esse é o método experimental para identificar $\omega_0$ e $\gamma$ a partir de medições — explorado na [Aula 3](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_3_PROCESS_SINAIS/).
+
 Substituindo a Eq$\eqref{eq:43}$ na Eq$\eqref{eq:42}$:
 $$
  r = -\frac{\gamma}{2} \pm i\omega
@@ -757,7 +769,14 @@ A partir das Eqs$\eqref{eq:61.1}$,$\eqref{eq:61.2}$ e $\eqref{eq:61.3.1}$ podemo
 ```{r ex10-graf-amortecimento, echo=FALSE, fig.cap='Oscilações Amortecidas.', out.width='100%', fig.align='center' }
  knitr::include_graphics('graf_amortecimento.png')  
 ```
-Para uma melhor visualização do comportamento **físico** e **gráfico** das **oscilações livres amortecidas** [Clique aqui](http://physics.bu.edu/~duffy/semester1/c19_damped_sim.html). 
+Para uma melhor visualização do comportamento **físico** e **gráfico** das **oscilações livres amortecidas** [Clique aqui](http://physics.bu.edu/~duffy/semester1/c19_damped_sim.html).
+
+---
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin:2em 0 1em;flex-wrap:wrap;gap:1em;">
+<span style="color:#888;font-size:0.88em;font-style:italic;">Aula 1 de 3 — Oscilações Livres</span>
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/" target="_blank" style="background:#1e9aa6;color:white;padding:8px 20px;border-radius:4px;text-decoration:none;font-size:0.88em;font-weight:600;">Aula 2: Oscilações Forçadas →</a>
+</div>
 
 ---
 

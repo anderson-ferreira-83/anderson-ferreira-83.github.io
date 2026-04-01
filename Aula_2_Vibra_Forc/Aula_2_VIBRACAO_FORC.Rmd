@@ -37,6 +37,13 @@ p {
 }
 </style>
 
+<div style="background:#f4f8fb;border-left:4px solid #1e9aa6;padding:12px 20px;margin:1.2em 0 1.8em;border-radius:4px;font-size:0.85em;line-height:1.8;">
+<strong>Série — Oscilações e Processamento de Sinais</strong><br>
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/" target="_blank">← Aula 1: Oscilações Livres</a> &nbsp;|&nbsp;
+<strong>Aula 2: Oscilações Forçadas</strong> — você está aqui &nbsp;|&nbsp;
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_3_PROCESS_SINAIS/" target="_blank">Aula 3: Processamento de Sinais →</a>
+</div>
+
 # Vibrações Forçadas
 
 Na aula anterior, estudamos o comportamento de sistemas que oscilam livremente, após uma perturbação inicial. Agora, vamos analisar o que acontece quando uma **força externa periódica** é aplicada continuamente ao sistema.
@@ -83,6 +90,8 @@ onde:
 
 - $x_h(t)$ é a solução da equação **homogênea** associada (com $f(t) = 0$), que representa a **resposta transiente** — ela decai com o tempo em sistemas amortecidos.
 - $x_p(t)$ é qualquer solução particular que satisfaça a equação **completa** com $f(t) \neq 0$, que representa a **resposta estacionária** — ela persiste indefinidamente.
+
+> **Vínculo com a Aula 1:** $x_h(t)$ é exatamente a solução deduzida na [Aula 1 — Oscilações Livres](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/). Para o caso subamortecido ($\zeta < 1$): $x_h(t) = e^{-\zeta\omega_0 t}[D_1\cos(\omega_d t)+D_2\sin(\omega_d t)]$, onde $\omega_d = \omega_0\sqrt{1-\zeta^2}$ é a frequência amortecida. O forçamento externo **acrescenta** $x_p(t)$ a essa resposta já conhecida — daí o nome *superposição*.
 
 Fisicamente, a Eq$\eqref{eq:2}$ nos diz que o sistema responde ao mesmo tempo à sua **condição inicial** (transiente) e à **força aplicada** (estacionária). Com o tempo, o transiente desaparece e resta apenas a resposta estacionária, conforme será visto adiante.
 
@@ -314,6 +323,8 @@ $$
 \label{eq:22}
 $$
 
+A Eq$\eqref{eq:22}$ conecta diretamente com a notação da **Aula 1**, onde o coeficiente de amortecimento foi definido como $\gamma = b/m\ [\text{s}^{-1}]$. A razão de amortecimento é simplesmente $\zeta = \gamma/(2\omega_0)$ — a versão **adimensional** de $\gamma$, normalizada pela frequência natural. Enquanto $\gamma$ depende dos parâmetros físicos brutos do sistema, $\zeta$ permite comparar o nível de amortecimento de sistemas com frequências naturais completamente diferentes — fundamental para a análise universal do Diagrama de Bode desta seção.
+
 A razão de amortecimento $\zeta$ da Eq$\eqref{eq:22}$ está diretamente relacionada com os três casos estudados na Aula 1, conforme a Tabela 1:
 
 $\zeta$               | Relação entre $b$ e $b_c$ | Comportamento
@@ -441,6 +452,8 @@ $$
 \tag{35}
 \label{eq:35}
 $$
+
+> **Conexão com a Aula 3 — FRF Experimental:** O FAD $H(r,\zeta)$ da Eq$\eqref{eq:35}$ é a versão **teórica** da **Função de Resposta em Frequência (FRF)**, central ao diagnóstico experimental de máquinas. Na prática, a FRF é estimada como a razão entre o espectro FFT da resposta e o da excitação: $\text{FRF}(f) = |Y(f)|/|X(f)|$. O **Diagrama de Bode** desta seção — amplitude $H$ e fase $\phi$ em função de $r$ — é exatamente o que o pipeline IoT da [Aula 3](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_3_PROCESS_SINAIS/) mede ao analisar os espectros do sensor MPU6050. Em particular: o pico em $r_{res} = \sqrt{1-2\zeta^2}$ (Eq$\eqref{eq:38}$) corresponde ao pico dominante nos espectros calibrados do motor; e o valor $H_{max} = 1/(2\zeta)$ em $r=1$ determina o quanto a amplitude de vibração excede o valor estático — informação crítica para o diagnóstico de falha.
 
 e o ângulo de fase em função de $r$ e $\zeta$:
 
@@ -828,6 +841,14 @@ output$plot_time <- renderPlot({
 3. **Transiente vs. estacionário**: ative a checkbox. Observe o transiente decaindo e o estacionário persistindo.
 4. **Batimento**: ajuste $\zeta = 0.01$ e $r = 0.95$. Observe a modulação da amplitude.
 5. **Sem amortecimento na ressonância**: ajuste $\zeta = 0.01$ e $r = 1.00$ com condições iniciais nulas. A amplitude cresce progressivamente.
+
+---
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin:2em 0 1em;flex-wrap:wrap;gap:1em;">
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_1_OSCILACOES/" target="_blank" style="background:#163042;color:white;padding:8px 20px;border-radius:4px;text-decoration:none;font-size:0.88em;font-weight:600;">← Aula 1: Oscilações Livres</a>
+<span style="color:#888;font-size:0.88em;font-style:italic;">Aula 2 de 3 — Oscilações Forçadas</span>
+<a href="https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_3_PROCESS_SINAIS/" target="_blank" style="background:#1e9aa6;color:white;padding:8px 20px;border-radius:4px;text-decoration:none;font-size:0.88em;font-weight:600;">Aula 3: Processamento de Sinais →</a>
+</div>
 
 ---
 
