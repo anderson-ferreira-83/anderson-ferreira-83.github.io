@@ -719,6 +719,7 @@ img { max-width: 100%; display: block; }
   font-size: 1.8rem;
   line-height: 1;
   flex-shrink: 0;
+  display: none;
 }
 
 .teaching-header h3 {
