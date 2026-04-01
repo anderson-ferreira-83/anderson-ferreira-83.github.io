@@ -30,7 +30,7 @@ Professor Adjunto | Computacao, Dados e Machine Learning
 - Atuei como orientador e desenvolvedor em projeto de predicao de risco de hipertensao com 4.240 amostras e 12 variaveis clinicas.
 - Implementei pipeline de treinamento com split estratificado, SMOTE apenas no treino e validacao cruzada 5-fold.
 - Conduzi avaliacao orientada a classes desbalanceadas, com foco em Recall, F2-score, AUC-ROC, thresholds clinicos e SHAP.
-- Leciono Programacao Web, Java, Estrutura de Dados e Fundamentos de Bancos de Dados.
+- Leciono Programacao Web, Progamacao Orientada a Objetos nas linguagens Java e Python, Estrutura de Dados e Fundamentos de Bancos de Dados.
 
 ## Experiencia - UNICAMP
 ### Titulo sugerido
