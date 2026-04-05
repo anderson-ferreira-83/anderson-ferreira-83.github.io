@@ -157,8 +157,8 @@ img { max-width: 100%; display: block; }
 
 .two-column {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
+  grid-template-columns: 2fr 1fr;
+  gap: 36px;
   align-items: start;
 }
 
@@ -665,7 +665,7 @@ img { max-width: 100%; display: block; }
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.compact-cards { grid-template-columns: 1fr; }
+.compact-cards { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .compact-cards .card { padding: 18px; }
 
 .card {
@@ -899,25 +899,57 @@ img { max-width: 100%; display: block; }
 .timeline {
   position: relative;
   padding-left: 36px;
-  max-width: 720px;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 48px;
 }
 
+/* Vertical bar — only on the left column's left edge */
 .timeline::before {
   content: "";
   position: absolute;
   left: 5px;
   top: 8px;
-  bottom: 0;
+  bottom: 36px;
   width: 2px;
-  background: linear-gradient(to bottom, var(--accent), var(--accent-2), transparent);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--accent) 0px,
+    var(--accent) 6px,
+    transparent 6px,
+    transparent 10px
+  );
   border-radius: 2px;
+  opacity: 0.7;
+}
+
+/* End marker for the vertical bar */
+.timeline::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  bottom: 28px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  opacity: 0.5;
 }
 
 .timeline-item {
   position: relative;
-  padding-bottom: 36px;
+  padding-bottom: 28px;
 }
 .timeline-item:last-child { padding-bottom: 0; }
+
+/* Right-column items: shift dot to the left side of that column */
+.timeline-item:nth-child(even) {
+  padding-left: 36px;
+}
+.timeline-item:nth-child(even) .timeline-dot {
+  left: 1px;
+}
 
 .timeline-dot {
   position: absolute;
@@ -1130,12 +1162,16 @@ img { max-width: 100%; display: block; }
 /* ============================================================
    RESPONSIVE
 ============================================================ */
-@media (max-width: 900px) {
-  .contact-grid { grid-template-columns: 1fr; }
-  .form-row { grid-template-columns: 1fr; }
+
+/* ── Mid-range: 901px – 1100px ─────────────────────────── */
+@media (max-width: 1100px) and (min-width: 901px) {
+  /* Compress nav links slightly so they never wrap */
+  .nav { gap: 10px; font-size: 0.83rem; }
 }
 
-@media (max-width: 720px) {
+/* ── Tablet / large mobile: ≤ 900px ─────────────────────── */
+@media (max-width: 900px) {
+  /* Nav: collapse into hamburger */
   .nav-toggle { display: flex; }
 
   .nav {
@@ -1145,7 +1181,11 @@ img { max-width: 100%; display: block; }
     gap: 0;
     border-top: 1px solid rgba(22, 48, 66, 0.08);
     margin-top: 8px;
+    max-height: 70vh;
+    overflow-y: auto;
+    scrollbar-width: none;
   }
+  .nav::-webkit-scrollbar { display: none; }
   [data-theme="dark"] .nav { border-top-color: rgba(255, 255, 255, 0.08); }
   .nav.is-open { display: flex; padding-bottom: 10px; }
   .nav a { padding: 10px 0; border-bottom: 1px solid rgba(22, 48, 66, 0.06); }
@@ -1153,22 +1193,64 @@ img { max-width: 100%; display: block; }
   .nav a:last-child { border-bottom: none; }
   .nav a::after { display: none; }
 
+  /* Layout */
+  .two-column { grid-template-columns: 1fr; }
+
+  /* Hero */
   .hero { padding-top: 60px; }
+  .hero-grid { grid-template-columns: 1fr; }
   .section { padding: 56px 0; }
 
   .profile-photo { width: 100px; height: 100px; }
   .hero-stats { gap: 18px; }
   .stat-num { font-size: 1.6rem; }
 
+  /* Sobre: cursos ativos em 2 colunas */
+  .about-courses .cards:not(.compact-cards) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Contact */
+  .contact-grid { grid-template-columns: 1fr; gap: 28px; }
+  .form-row { grid-template-columns: 1fr; }
+
+  /* Course cards */
   .course-card { grid-template-columns: 1fr; }
   .course-links { grid-column: 1 / 2; grid-row: auto; justify-self: start; }
 
+  /* Timeline: single column on tablet */
+  .timeline {
+    grid-template-columns: 1fr;
+    padding-left: 36px;
+  }
+  .timeline-item:nth-child(even) { padding-left: 0; }
+  .timeline-item:nth-child(even) .timeline-dot { left: -35px; }
+  .timeline::after { display: none; }
+
+  /* Skills */
   .skill-bars { grid-template-columns: 1fr; }
 
+  /* Background */
   .scientific-background::before { background-size: 2000px 1250px; opacity: 0.04; }
   .scientific-background::after  { background-size: 1500px 1100px; opacity: 0.045; }
 
   .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Small mobile: ≤ 480px ───────────────────────────────── */
+@media (max-width: 480px) {
+  .hero-cta { flex-direction: column; }
+  .hero-cta .btn { width: 100%; justify-content: center; }
+
+  .section-title { margin-bottom: 10px; }
+
+  .about-courses .cards:not(.compact-cards) {
+    grid-template-columns: 1fr;
+  }
+
+  .tag { font-size: 0.78rem; padding: 5px 10px; }
+
+  .contact-form { padding: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
