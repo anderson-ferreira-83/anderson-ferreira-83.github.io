@@ -1,0 +1,61 @@
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(17, 68, 104, 0.34), transparent 32%),
+    radial-gradient(circle at 82% 14%, rgba(58, 196, 255, 0.12), transparent 20%),
+    radial-gradient(circle at 50% 120%, rgba(44, 155, 207, 0.15), transparent 40%),
+    linear-gradient(180deg, #03070b 0%, #03101a 42%, #02060a 100%);
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: -3;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 120px 120px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.85) 34%, transparent 90%);
+}
+
+body::after {
+  z-index: -2;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(83, 200, 255, 0.1), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(83, 200, 255, 0.08), transparent 26%);
+  opacity: 0.8;
+}
+
+#signal-field-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 1;
+}
+
+@media (max-width: 920px) {
+  body::before {
+    background-size: 96px 96px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    opacity: 0.18;
+  }
+}
