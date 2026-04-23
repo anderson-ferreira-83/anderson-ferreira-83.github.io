@@ -2,144 +2,187 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage[default]{sourcesanspro}   % clean sans-serif (IBM Plex Sans feel)
 \input{glyphtounicode}
 \pdfgentounicode=1
-\usepackage[margin=0.45in]{geometry}
-\usepackage[colorlinks=true,urlcolor=cvblue,linkcolor=cvblue]{hyperref}
+\usepackage[top=0.42in,bottom=0.42in,left=0.46in,right=0.46in]{geometry}
+\usepackage[colorlinks=true,urlcolor=cvaccent,linkcolor=cvaccent]{hyperref}
 \usepackage{enumitem}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{marvosym}
 
-\definecolor{cvblue}{HTML}{1A3A5C}
+% ── Palette (derived from anderson-ferreira-83.github.io) ──────────────
+%   site: bg #020406 · accent #53c8ff · text #f3f7fb · muted #9aafc2
+%   cv (white paper): darken accent for legibility, keep brand family
+\definecolor{cvdark}{HTML}{081420}    % near-black navy  → headings / name
+\definecolor{cvaccent}{HTML}{0A7FB5}  % darkened cyan    → links, dates, rules
+\definecolor{cvmuted}{HTML}{456272}   % blue-grey        → institutions, labels
+\definecolor{cvrule}{HTML}{B8D4E8}    % light cyan       → decorative hairlines
+\definecolor{cvbullet}{HTML}{1A9ED4}  % mid-cyan         → bullet dots
 
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
-\setlist[itemize]{leftmargin=1.1em,itemsep=0pt,topsep=0pt,parsep=0pt}
+\setlist[itemize]{%
+  leftmargin=1.2em,
+  itemsep=1pt,
+  topsep=2pt,
+  parsep=0pt,
+  label={\small\color{cvbullet}\textbullet}
+}
 \urlstyle{same}
 
-% Secao com cor de destaque
-\newcommand{\cvsection}[1]{%
-    \vspace{0.34em}
-    {\large\bfseries\color{cvblue} #1}\par
-    \vspace{0.05em}
-    {\color{cvblue}\hrule}
-    \vspace{0.15em}
+% ── Commands ───────────────────────────────────────────────────────────
+
+% Section with numbered kicker  →  01 · Título
+\newcommand{\cvsection}[2]{%
+  \vspace{0.42em}
+  {\footnotesize\bfseries\color{cvmuted}#1}\enspace
+  {\large\bfseries\color{cvdark}#2}\par
+  \vspace{0.04em}
+  {\color{cvrule}\hrule height 0.5pt}
+  \vspace{0.18em}
 }
 
-% Entrada de experiencia/projeto: {Titulo}{Periodo}{Subtitulo}{Corpo}
+% Experience / Project entry: {Título}{Período}{Subtítulo}{Corpo}
 \newcommand{\entry}[4]{%
-    \textbf{#1} \hfill {\color{cvblue}\textbf{#2}}\par
-    \textit{#3}\par
-    #4
-    \vspace{0.10em}
+  \noindent\textbf{\color{cvdark}#1}\hfill{\small\bfseries\color{cvaccent}#2}\par
+  {\small\itshape\color{cvmuted}#3}\par
+  \vspace{0.04em}
+  {\small #4}
+  \vspace{0.12em}
 }
 
-% Entrada de formacao: {Grau e Curso}{Instituicao}{Periodo}
+% Education: {Grau e Curso}{Instituição}{Período}
 \newcommand{\cvdegree}[3]{%
-    \textbf{#1} \hfill {\color{cvblue}#3}\par
-    \textit{#2}\par
-    \vspace{0.06em}
+  \noindent\textbf{\color{cvdark}#1}\hfill{\small\color{cvaccent}#3}\par
+  {\small\itshape\color{cvmuted}#2}\par
+  \vspace{0.06em}
 }
 
-% Linha de competencia: {Categoria}{Habilidades}
+% Skill row: {Categoria}{Habilidades}
 \newcommand{\skill}[2]{%
-    \makebox[2.7cm][l]{\textbf{#1}} #2\par
-    \vspace{0.02em}
+  \noindent\makebox[2.9cm][l]{{\small\bfseries\color{cvdark}#1}}{\small\color{cvmuted}#2}\par
+  \vspace{0.03em}
 }
 
 \begin{document}
 
-% ---------- Cabecalho ----------
-{\LARGE\bfseries\color{cvblue} ANDERSON H. R. FERREIRA}\par
+% ── Top accent stripe (mirrors featured-card stripe on the site) ────────
+{\color{cvaccent}\noindent\rule{\linewidth}{1.8pt}}\par
+\vspace{0.22em}
+
+% ── Name block ──────────────────────────────────────────────────────────
+{\fontsize{19.5}{23}\selectfont\bfseries\color{cvdark} Anderson H. R. Ferreira}\par
+\vspace{0.08em}
+{\footnotesize\bfseries\color{cvmuted}\MakeUppercase{From Signals to Intelligence}}\par
+\vspace{0.05em}
+{\small\color{cvaccent}%
+  Dados \& Analytics · Machine Learning · Processamento de Sinais · IoT%
+  \enspace|\enspace Doutorando UNICAMP%
+}\par
+\vspace{0.18em}
+
+% ── Contact row ─────────────────────────────────────────────────────────
+{\small\color{cvmuted}%
+  +55\,11\,95850-9690\enspace·\enspace
+  \href{mailto:a058899@dac.unicamp.br}{a058899@dac.unicamp.br}\enspace·\enspace
+  Salto, SP\enspace·\enspace
+  \href{https://anderson-ferreira-83.github.io/}{anderson-ferreira-83.github.io}\enspace·\enspace
+  \href{https://www.linkedin.com/in/anderson-ferreira-1a473138/?locale=pt}{LinkedIn}\enspace·\enspace
+  \href{https://github.com/anderson-ferreira-83}{GitHub}\\[2pt]
+  Defesa prevista: dez/2026\enspace·\enspace
+  Disponibilidade híbrida em São Paulo: jun/2026--set/2026%
+}\par
 \vspace{0.12em}
-{\normalsize Dados, Machine Learning e Analytics $\mid$ Doutorando UNICAMP}\par
-\vspace{0.16em}
-{\color{cvblue}\noindent\rule{\linewidth}{0.8pt}}\par
-\vspace{0.16em}
+{\color{cvrule}\noindent\rule{\linewidth}{0.4pt}}\par
+\vspace{0.18em}
 
+% ── 00 · Resumo ─────────────────────────────────────────────────────────
+\cvsection{00}{Resumo}
+{\small Doutorando em Engenharia Mecânica na UNICAMP, com atuação aplicada em dados, machine
+learning, cloud e estatística. Experiência em modelagem preditiva, validação de modelos, feature
+engineering e implementação com Python, SQL, FastAPI, Oracle e AWS. Repertório construído em
+projetos de IoT e saúde, com técnicas transferíveis para analytics, risco, fraude, churn e apoio
+a decisão.}
+
+% ── 01 · Competências ───────────────────────────────────────────────────
+\cvsection{01}{Competências Técnicas}
+\skill{Linguagens}{Python · SQL · Java · JavaScript}
+\skill{Frameworks}{FastAPI · scikit-learn · Docker}
+\skill{ML / Dados}{Random Forest · SMOTE · SHAP · ETL · EDA · Feature Engineering ·
+  Cross-validation · Threshold Analysis · Estatística Aplicada}
+\skill{Cloud / Infra}{AWS · Oracle SQL}
+
+% ── 02 · Projetos ───────────────────────────────────────────────────────
+\cvsection{02}{Projetos de Dados e ML}
+
+\entry{Predição de Risco com SMOTE}{Projeto aplicado}%
+  {Saúde | orientador e desenvolvedor}{%
+  \begin{itemize}
+    \item Predição de risco de hipertensão com 4.240 amostras e 12 variáveis clínicas.
+    \item Split estratificado, SMOTE apenas no treino e validação cruzada 5-fold, evitando data leakage em problema desbalanceado.
+    \item Avaliação com Recall, F2-score, AUC-ROC, thresholds clínicos e interpretabilidade via SHAP.
+    \item Abordagem transferível para fraude, churn, credit scoring e cenários com classe rara.
+  \end{itemize}
+}
+
+\entry{Pipeline IoT End-to-End}{Projeto aplicado}%
+  {ESP32 · FastAPI · Oracle XE}{%
+  \begin{itemize}
+    \item Pipeline de coleta, tratamento e classificação para 7 estados operacionais: ESP32 + MPU6050 → FastAPI → Oracle XE.
+    \item 104 features candidatas geradas; 16 finais selecionadas. Random Forest (200 árvores): 97,34\% ±\,0,63\% em CV e 94,24\% em holdout.
+    \item Mais de 210 mil registros documentados; inferência em produção no browser sem servidor de ML dedicado.
+  \end{itemize}
+}
+
+% ── 03 · Experiência ────────────────────────────────────────────────────
+\cvsection{03}{Experiência Profissional}
+
+\entry{Professor Adjunto}{fev/2025--Atual}%
+  {Cruzeiro do Sul Educacional}{%
+  \begin{itemize}
+    \item Docência em POO (Java), Estrutura de Dados I e II, Programação Web e Bancos de Dados.
+    \item Atividades práticas com Java, Python e SQL, conectando algoritmos, modelagem e aplicações reais.
+    \item Acompanhamento de projetos com integração entre software, dados e bancos de dados.
+  \end{itemize}
+}
+
+\entry{Pesquisador de Doutorado}{2018--Atual}%
+  {UNICAMP --- Engenharia Mecânica}{%
+  \begin{itemize}
+    \item Pesquisa em processamento de sinais, modelagem estatística, sensores e classificação de estados operacionais.
+    \item Publicação aceita no \textit{Mechanical Systems and Signal Processing} (MSSP), 2026 --- comparando 5 geometrias com abordagem orientada a dados.
+  \end{itemize}
+}
+
+\entry{Professor Universitário}{2014--2021}%
+  {CEUNSP}{%
+  \begin{itemize}
+    \item Disciplinas de Probabilidade e Estatística, Físicas Experimentais, Termodinâmica e Transferência de Calor.
+    \item Atividades de regressão, testes de hipótese, inferência estatística e simulação computacional.
+  \end{itemize}
+}
+
+% ── 04 · Formação ────────────────────────────────────────────────────────
+\cvsection{04}{Formação}
+\cvdegree{Doutorado em Engenharia Mecânica}{UNICAMP}{2018--2026 (em andamento)}
+\cvdegree{CST em Ciência de Dados}{Estácio}{2025--2027 (em andamento)}
+\cvdegree{Mestrado em Engenharia Mecânica}{UNICAMP}{2011--2013}
+\cvdegree{Licenciatura em Física}{UNICAMP}{2006--2010}
+
+% ── 05 · Certificações ───────────────────────────────────────────────────
+\cvsection{05}{Certificações e Publicação}
 {\small
-\Mobilefone\;+55 11 95850-9690 \;$\mid$\;
-\href{mailto:a058899@dac.unicamp.br}{\Letter\;a058899@dac.unicamp.br} \;$\mid$\;
-Salto, SP \;$\mid$\;
-\href{https://anderson-ferreira-83.github.io/}{$\triangleright$\,Portfolio} \;$\mid$\;
-\href{https://www.linkedin.com/in/anderson-ferreira-1a473138/?locale=pt}{$\triangleright$\,LinkedIn} \;$\mid$\;
-\href{https://github.com/anderson-ferreira-83}{$\triangleright$\,GitHub}\\[1pt]
-Defesa prevista: dez/2026 \;$\mid$\;
-Disponibilidade hibrida em Sao Paulo: jun/2026--set/2026
+  AWS Certified AI Practitioner\enspace·\enspace
+  Applied Machine Learning in Python\enspace·\enspace
+  IBM Data Engineering Professional Certificate\par
+  \vspace{0.06em}
+  \textit{Mechanical Systems and Signal Processing} (MSSP), 2026
+  \enspace|\enspace Impact Factor \textbf{\color{cvaccent}8.9}
 }
 
-% ---------- Resumo ----------
-\cvsection{Resumo}
-Doutorando em Engenharia Mecanica na UNICAMP, com atuacao aplicada em dados, machine learning,
-cloud e estatistica. Experiencia em modelagem preditiva, validacao de modelos, feature engineering
-e implementacao com Python, SQL, FastAPI, Oracle e AWS. Repertorio construido em projetos de IoT
-e saude, com tecnicas transferiveis para analytics, risco, fraude, churn e apoio a decisao.
-
-% ---------- Competencias ----------
-\cvsection{Competencias Tecnicas}
-\skill{Linguagens}{Python $\cdot$ SQL $\cdot$ Java $\cdot$ JavaScript}
-\skill{Frameworks}{FastAPI $\cdot$ scikit-learn $\cdot$ Docker}
-\skill{ML / Dados}{Random Forest $\cdot$ SMOTE $\cdot$ SHAP $\cdot$ ETL $\cdot$ EDA $\cdot$ Feature Engineering $\cdot$ Cross-validation $\cdot$ Threshold Analysis $\cdot$ Estatistica Aplicada}
-\skill{Cloud / Infra}{AWS $\cdot$ Oracle SQL}
-
-% ---------- Projetos ----------
-\cvsection{Projetos de Dados e ML}
-
-\entry{Predicao de Risco com SMOTE}{Projeto aplicado}{Saude $\mid$ orientador e desenvolvedor}{
-\begin{itemize}
-    \item Atuei em projeto de predicao de risco de hipertensao com 4.240 amostras e 12 variaveis clinicas.
-    \item Implementei split estratificado, SMOTE apenas no treino e validacao cruzada 5-fold, evitando data leakage em problema desbalanceado.
-    \item Estruturei avaliacao com foco em Recall, F2-score, AUC-ROC, thresholds clinicos e interpretabilidade com SHAP.
-    \item Abordagem transferivel para fraude, churn, credit scoring e outros cenarios com classe rara.
-\end{itemize}
-}
-
-\entry{Pipeline IoT End-to-End}{Projeto aplicado}{ESP32 $\cdot$ FastAPI $\cdot$ Oracle XE}{
-\begin{itemize}
-    \item Desenvolvi pipeline de coleta, tratamento e classificacao para 7 estados operacionais com ESP32, MPU6050, FastAPI e Oracle XE.
-    \item Expandi o espaco de atributos para 104 features candidatas e selecionei 16 finais; Random Forest com 200 arvores atingiu 97,34\% $\pm$ 0,63\% em validacao cruzada e 94,24\% em holdout.
-    \item Projeto com mais de 210 mil registros em runs documentadas e inferencia no browser sem servidor de ML dedicado.
-\end{itemize}
-}
-
-% ---------- Experiencia ----------
-\cvsection{Experiencia Profissional}
-
-\entry{Professor Adjunto}{fev/2025--Atual}{Cruzeiro do Sul Educacional}{
-\begin{itemize}
-    \item Docencia em Programacao Orientada a Objetos, Estrutura de Dados, Programacao Web e Fundamentos de Bancos de Dados.
-    \item Desenvolvimento de atividades praticas com Java, Python e SQL, conectando algoritmos, modelagem de dados e aplicacoes reais.
-    \item Acompanhamento de projetos aplicados com integracao entre software, dados e bancos de dados.
-\end{itemize}
-}
-
-\entry{Pesquisador de Doutorado}{2018--Atual}{UNICAMP --- Engenharia Mecanica}{
-\begin{itemize}
-    \item Pesquisa aplicada em processamento de sinais, modelagem estatistica, sensores e classificacao de estados operacionais.
-    \item Publicacao aceita no Mechanical Systems and Signal Processing (MSSP), 2026, comparando 5 geometrias com abordagem orientada a dados.
-\end{itemize}
-}
-
-\entry{Professor Universitario}{2014--2021}{CEUNSP}{
-\begin{itemize}
-    \item Atuei em disciplinas de Probabilidade e Estatistica, Fisicas Experimentais, Termodinamica Aplicada e Transferencia de Calor.
-    \item Desenvolvi atividades ligadas a regressao, testes de hipotese, inferencia estatistica e simulacao computacional.
-\end{itemize}
-}
-
-% ---------- Formacao ----------
-\cvsection{Formacao}
-
-\cvdegree{Doutorado em Engenharia Mecanica}{UNICAMP}{2018--2026 (em andamento)}
-\cvdegree{CST em Ciencia de Dados}{Estacio}{2025--2027 (em andamento)}
-\cvdegree{Mestrado em Engenharia Mecanica}{UNICAMP}{2011--2013}
-\cvdegree{Licenciatura em Fisica}{UNICAMP}{2006--2010}
-
-% ---------- Certificacoes ----------
-\cvsection{Certificacoes e Publicacao}
-AWS Certified AI Practitioner $\mid$ Applied Machine Learning in Python $\mid$ IBM Data Engineering Professional Certificate\par
-\textit{Mechanical Systems and Signal Processing} (MSSP), 2026 $\mid$ Impact Factor 8.9
+% ── Bottom hairline ───────────────────────────────────────────────────────
+\vspace{0.34em}
+{\color{cvrule}\noindent\rule{\linewidth}{0.4pt}}\par
 
 \end{document}
