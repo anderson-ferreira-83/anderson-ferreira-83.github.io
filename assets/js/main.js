@@ -76,7 +76,7 @@
       "about.body.1":
         "Sou cientista de dados e pesquisador, com experiência em todo o ciclo de vida de modelos, da preparação de dados à implementação e monitoramento. Minha atuação combina pesquisa aplicada e execução técnica em projetos de IoT, saúde, machine learning e sistemas preditivos.",
       "about.body.2":
-        "Atuo também como professor nas disciplinas de Programação Web, POO (Java), Estrutura de Dados I &amp; II e Bancos de Dados (Oracle SQL) — detalhes na seção <a class=\"inline-link\" href=\"#docencia\">Docência</a>.",
+        "Atuo também como professor nas disciplinas de Programação Web, POO (Java), Estrutura de Dados I &amp; II, Bancos de Dados (Oracle SQL), Dispositivos Móveis e Linguagens Formais e Autômatos — detalhes na seção <a class=\"inline-link\" href=\"#docencia\">Docência</a>.",
       "about.focus.title": "Foco atual",
       "about.focus.1": "Dados e Analytics com foco em qualidade, modelagem e inferência",
       "about.focus.2": "Machine Learning aplicado a classes desbalanceadas e detecção de anomalias",
@@ -145,7 +145,7 @@
         "Sistema de detecção de anomalias em dados inerciais com pipeline completo: edge computing, AWS IoT, dashboard e monitoramento.",
       "timeline.2025a.title": "Professor Adjunto — Cruzeiro do Sul Educacional",
       "timeline.2025a.body":
-        "Docência nas disciplinas de POO (Java), Programação Web, Estrutura de Dados I &amp; II e Bancos de Dados — com portais ativos e projetos aplicados em produção.",
+        "Docência nas disciplinas de POO (Java), Programação Web, Estrutura de Dados I &amp; II, Bancos de Dados, Dispositivos Móveis e Linguagens Formais e Autômatos — conectando teoria a projetos aplicados em produção.",
       "timeline.2025b.title": "Hyperten ML — Predição de Hipertensão",
       "timeline.2025b.body":
         "Modelos preditivos para estratificação de risco cardiovascular com interface clínica de inferência em produção.",
@@ -212,6 +212,20 @@
       "teaching.card.4.tag1": "Algoritmos",
       "teaching.card.4.tag2": "Complexidade O(n)",
       "teaching.card.4.tag3": "Otimização",
+      "teaching.card.5.title": "Programação para Dispositivos Móveis",
+      "teaching.card.5.track": "Android · Kotlin &amp; Java",
+      "teaching.card.5.body":
+        "Desenvolvimento Android nativo: da interface, layouts e activities até persistência, conectividade e sensores — SQLite/Room, REST/JSON, threads, serviços, notificações e localização, com módulo de encerramento em Kotlin.",
+      "teaching.card.5.bridge":
+        "Pipelines de dados de sensores IoT · Consumo de APIs REST em clientes mobile · Persistência de dados on-device (SQLite/Room)",
+      "teaching.card.5.tag": "Sensores &amp; APIs",
+      "teaching.card.6.title": "Linguagens Formais e Autômatos",
+      "teaching.card.6.track": "Teoria da Computação · Compiladores",
+      "teaching.card.6.body":
+        "Gramáticas formais e expressões regulares até autômatos finitos (AFD/AFN), autômatos com pilha e máquinas de Turing, chegando ao front-end de compiladores: análise léxica, análise sintática e tabela de símbolos.",
+      "teaching.card.6.bridge":
+        "Parsing baseado em regex em pipelines ETL · Tokenização para pré-processamento de NLP · Base teórica para compiladores e ferramentas de DSL",
+      "teaching.card.6.tag": "Gramáticas Formais",
       "contact.title": "Contato",
       "contact.intro":
         "Aberto a colaborações acadêmicas, pesquisa aplicada e consultorias em data science e machine learning.",
