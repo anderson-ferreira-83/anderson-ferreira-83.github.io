@@ -285,7 +285,7 @@ $$
 
 A Eq$\eqref{eq:19}$ revela o comportamento mais importante da ressonância: a amplitude **cresce linearmente com o tempo** $t$, como ilustrado na Figura \@ref(fig:ex7-ressonancia). Na prática, isso leva à falha estrutural do sistema!
 
-```{r ex7-ressonancia, echo=FALSE, fig.cap='Ressonância: amplitude crescendo sem limite quando $\\omega = \\omega_0$. Compare com a queda da Ponte Tacoma da Aula 1.', out.width='68%', fig.align='center'}
+```{r ex7-ressonancia, echo=FALSE, fig.cap='Ressonância: amplitude crescendo sem limite quando $\\omega = \\omega_0$ (caso ideal, sem amortecimento).', out.width='68%', fig.align='center'}
 knitr::include_graphics('ressonancia.gif')
 ```
 

@@ -973,6 +973,10 @@ section[id] {
   gap: 16px;
 }
 
+.teaching-card--wide {
+  grid-column: 1 / -1;
+}
+
 .teaching-head {
   display: grid;
   gap: 8px;

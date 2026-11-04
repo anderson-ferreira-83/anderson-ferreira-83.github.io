@@ -34,7 +34,7 @@ Para compreendermos o fenômeno de oscilações, é interessante notar algumas e
  knitr::include_graphics('tacoma.gif')
 ```
 
-> **Prévia — Aula 2:** O colapso da Ponte Tacoma (1940) é o exemplo mais emblemático de **ressonância forçada** na engenharia estrutural. A frequência natural de torção da ponte coincidiu com a frequência de excitação do vento, gerando amplificação dinâmica crescente até a ruptura. Este fenômeno será deduzido e quantificado na [Aula 2 — Oscilações Forçadas](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/).
+> **Prévia — Aula 2:** O colapso da Ponte Tacoma (1940) é um dos casos mais famosos de vibração estrutural e costuma ser lembrado nos livros como exemplo de **ressonância**. A análise moderna o atribui a um efeito aeroelástico (*flutter* torcional), em que o próprio movimento da ponte realimenta a força do vento: uma vibração autoexcitada, relacionada à ressonância, mas distinta dela. A **ressonância forçada**, em que uma excitação externa periódica coincide com a frequência natural do sistema, será deduzida e quantificada na [Aula 2 — Oscilações Forçadas](https://anderson-henrique-rodrigues-ferreira.shinyapps.io/Aula_2_VIBRACAO_FORC/).
 
 ```{r ex2-vibracao, echo=FALSE, fig.cap='Ondas de Flexão nas cordas.', out.width='45%', fig.align='center' }
  knitr::include_graphics('violao.gif')

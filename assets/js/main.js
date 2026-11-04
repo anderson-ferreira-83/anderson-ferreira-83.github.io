@@ -182,6 +182,14 @@
       "teaching.title": "Docência",
       "teaching.intro":
         "Disciplinas com conexão direta entre base teórica, aplicações web, bancos de dados e sistemas em produção.",
+      "teaching.lessons.title": "Vibrações e Processamento de Sinais — Aulas Interativas",
+      "teaching.lessons.body":
+        "Série de três aulas que vai das oscilações livres à vibração forçada e ao processamento de sinais, com simulações interativas em R Markdown e Shiny. Cada aula prepara a seguinte, e a série termina em um caso real de IoT.",
+      "teaching.lessons.bridge":
+        "A Aula 3 aplica FFT, janelamento e características espectrais a um sistema de monitoramento de vibração com ESP32 + MPU6050.",
+      "teaching.lessons.link1": "Aula 1 · Oscilações livres",
+      "teaching.lessons.link2": "Aula 2 · Oscilações forçadas",
+      "teaching.lessons.link3": "Aula 3 · Processamento de sinais",
       "teaching.card.1.title": "Programação Orientada a Objetos",
       "teaching.card.1.body":
         "Fundamentos sólidos de OOP com Java: classes, encapsulamento, herança, polimorfismo, exceções e APIs essenciais — alinhado à certificação Oracle.",
