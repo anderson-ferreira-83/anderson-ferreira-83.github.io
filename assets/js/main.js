@@ -94,6 +94,7 @@
         "Projetos aplicados com pipelines em produção, interfaces próprias e pesquisa conectada a sistemas reais.",
       "status.live": "Implementado",
       "status.prep": "Em preparação",
+      "status.proto": "Protótipo implementado",
       "projects.iot.body":
         "Detecção de anomalias em dados inerciais para manutenção preditiva com IoT. Pipeline completo do sensor ao dashboard em produção.",
       "projects.hyperten.body":
@@ -101,6 +102,12 @@
       "projects.hyperten.link1": "Projeto",
       "projects.hyperten.link2": "Inferência clínica",
       "projects.hyperten.tag": "Validação estatística",
+      "projects.erz.title": "Edge Risk Zone — Visão Computacional Edge AI",
+      "projects.erz.body":
+        "Detecção de pessoas e classificação de risco em relação a uma zona virtual configurável, somente em CPU, com YOLOX-Tiny, ONNX Runtime e FastAPI. Imagens Docker validadas em linux/amd64 e em execução linux/arm64 emulada. Desenvolvido como desafio técnico durante um processo seletivo conduzido pelo FIT – Instituto de Tecnologia.",
+      "projects.erz.link1": "Demonstração",
+      "projects.erz.link2": "Documentação da API",
+      "projects.erz.link3": "Código-fonte",
       "projects.bandgap.body":
         "Estimativa de band gaps em metamateriais acústicos com regressão e features geométricas.",
       "projects.bandgap.tag1": "Regressão",
